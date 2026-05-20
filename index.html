@@ -3,580 +3,872 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Social Sweepstakes Casino Market Analysis</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>U.S. Social Sweepstakes Casino — Competitive Intelligence Dashboard</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- Chosen Palette: Warm Neutrals (Stone, Amber, Slate) -->
-    <!-- Application Structure Plan: The SPA is structured as a two-view interactive dashboard to facilitate both macro and micro analysis. View 1: "Market Overview" provides aggregated charts (revenue share, traffic comparison) to instantly understand market dominance (VGW vs challengers). View 2: "Operator Deep Dive" uses a selector to load specific qualitative and quantitative data cards (Ownership, Financials, Web/App, Insights) for individual operators. This structure was chosen because it allows users to first grasp the overall market landscape before drilling down into the granular, heavily estimated details requested in the prompt, making the complex data easily consumable. -->
-    <!-- Visualization & Content Choices: 
-         1. Market Share (Rev) -> Goal: Compare Dominance -> Pie Chart (Chart.js) -> Hover interaction -> Shows VGW's massive lead clearly without SVG.
-         2. Web Traffic -> Goal: Compare Scale -> Bar Chart (Chart.js) -> Tooltips -> Easy visual comparison of monthly visits.
-         3. Traffic Sources -> Goal: Understand Acquisition -> Doughnut Chart (Chart.js) -> Dynamic update on operator selection -> Reveals marketing strategies (Direct vs Social).
-         4. Text Metrics -> Goal: Inform on specifics -> Grid Cards (HTML/Tailwind) -> Tabular/List format for quick scanning of App performance, regulatory notes, and LinkedIn data.
-         * Confirming NO SVG graphics used. NO Mermaid JS used. * -->
-    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-        body { font-family: 'Inter', sans-serif; background-color: #fafaf9; } /* bg-stone-50 */
-        .tab-active { border-bottom-color: #d97706; color: #b45309; font-weight: 600; } /* amber-600 / amber-700 */
-        .tab-inactive { border-bottom-color: transparent; color: #78716c; hover:text-stone-900; }
+        :root {
+            --primary-bg: #20304f;
+            --active-tab: #2281e0;
+            --alert-critical: #f3771b;
+            --warning-secondary: #fbbc04;
+            --positive-live: #46bdc6;
+            --hover-accent: #78b6ff;
+            --text-dark: #ffffff;
+            --text-light: #20304f;
+            --card-bg: #f5f7fa;
+            --border-color: #e0e4ea;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: var(--card-bg); color: var(--text-light); line-height: 1.5; }
         
-        /* Required Chart Container Styling */
-        .chart-container {
-            position: relative;
-            width: 100%;
-            max-width: 800px;
-            margin-left: auto;
-            margin-right: auto;
-            height: 300px;
-            max-height: 400px;
-        }
-        @media (min-width: 768px) {
-            .chart-container { height: 350px; }
-        }
-        .mini-chart-container {
-            position: relative;
-            width: 100%;
-            max-width: 400px;
-            margin-left: auto;
-            margin-right: auto;
-            height: 200px;
-            max-height: 250px;
-        }
+        header { background-color: var(--primary-bg); color: var(--text-dark); padding: 20px; text-align: center; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        h1 { font-size: 1.5rem; font-weight: 600; margin: 0; }
+
+        /* Navigation */
+        .nav-container { background-color: var(--primary-bg); position: sticky; top: 64px; z-index: 99; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .main-tabs { display: flex; overflow-x: auto; padding: 0 20px; scrollbar-width: none; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .main-tabs::-webkit-scrollbar { display: none; }
+        .tab-btn { background: none; border: none; color: rgba(255,255,255,0.7); padding: 15px 20px; cursor: pointer; font-size: 0.9rem; font-weight: 600; white-space: nowrap; transition: color 0.2s, border-bottom 0.2s; border-bottom: 3px solid transparent; }
+        .tab-btn:hover { color: var(--hover-accent); }
+        .tab-btn.active { color: var(--text-dark); border-bottom: 3px solid var(--active-tab); }
+
+        .sub-tabs { display: none; background-color: white; padding: 10px 20px; border-bottom: 1px solid var(--border-color); overflow-x: auto; white-space: nowrap; }
+        .sub-tabs.active { display: flex; gap: 10px; }
+        .sub-tab-btn { background-color: var(--card-bg); border: 1px solid var(--border-color); color: var(--text-light); padding: 6px 12px; border-radius: 20px; cursor: pointer; font-size: 0.85rem; font-weight: 500; transition: all 0.2s; }
+        .sub-tab-btn:hover { border-color: var(--hover-accent); color: var(--active-tab); }
+        .sub-tab-btn.active { background-color: var(--active-tab); color: var(--text-dark); border-color: var(--active-tab); }
+
+        /* Content Area */
+        .content-container { padding: 30px; max-width: 1400px; margin: 0 auto; }
+        .tab-pane, .sub-tab-pane { display: none; animation: fadeIn 0.3s; }
+        .tab-pane.active, .sub-tab-pane.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* Cards & Grid */
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
+        .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 20px; }
+        .card { background: white; border: 1px solid var(--border-color); border-radius: 8px; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        .card h3 { margin-bottom: 15px; color: var(--primary-bg); font-size: 1.1rem; border-bottom: 2px solid var(--border-color); padding-bottom: 8px; }
+        
+        /* Charts */
+        .chart-container { position: relative; height: 350px; width: 100%; }
+
+        /* Tables */
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 0.9rem; }
+        th, td { padding: 12px 15px; text-align: left; border-bottom: 1px solid var(--border-color); }
+        th { background-color: var(--card-bg); font-weight: 600; color: var(--primary-bg); position: sticky; top: 0; }
+        tr:nth-child(even) { background-color: #f8fafc; }
+        tr:hover { background-color: #f1f5f9; }
+        
+        .matrix-cell { font-weight: bold; text-align: center; border-radius: 4px; padding: 6px; }
+        .status-live { background-color: var(--positive-live); color: var(--text-dark); }
+        .status-limited { background-color: var(--warning-secondary); color: var(--text-light); }
+        .status-missing { background-color: var(--alert-critical); color: var(--text-dark); }
+        
+        /* Typography Helpers */
+        .pending-text { color: #94a3b8; font-style: italic; }
+        ul { margin-left: 20px; margin-bottom: 15px; }
+        li { margin-bottom: 8px; }
+        .highlight-number { font-size: 2rem; font-weight: 700; color: var(--active-tab); display: block; margin-bottom: 5px; }
+        
+        .timeline { border-left: 3px solid var(--active-tab); padding-left: 20px; margin-left: 10px; }
+        .timeline-item { position: relative; margin-bottom: 20px; }
+        .timeline-item::before { content: ''; position: absolute; left: -29px; top: 5px; width: 15px; height: 15px; background: white; border: 3px solid var(--active-tab); border-radius: 50%; }
+        
+        .source-link { color: var(--active-tab); text-decoration: none; word-break: break-all; }
+        .source-link:hover { text-decoration: underline; }
     </style>
 </head>
-<body class="text-stone-800 antialiased min-h-screen flex flex-col">
+<body>
 
-    <!-- Header -->
-    <header class="bg-white border-b border-stone-200 sticky top-0 z-10">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 flex justify-between items-center">
-            <div>
-                <h1 class="text-2xl font-bold text-stone-900">Sweepstakes Casino Intelligence</h1>
-                <p class="text-sm text-stone-500 mt-1">Competitive Analysis: VGW Holdings vs. Emerging Challengers</p>
+<header>
+    <h1>U.S. Social Sweepstakes Casino — Competitive Intelligence Dashboard</h1>
+</header>
+
+<div class="nav-container">
+    <div class="main-tabs" id="mainTabs">
+        <button class="tab-btn active" onclick="switchMainTab('exec-summary')">Executive Summary</button>
+        <button class="tab-btn" onclick="switchMainTab('revenue-market')">Revenue & Market Share</button>
+        <button class="tab-btn" onclick="switchMainTab('game-catalog')">Game Catalog & Providers</button>
+        <button class="tab-btn" onclick="switchMainTab('feature-gap')">Feature Gap Matrix</button>
+        <button class="tab-btn" onclick="switchMainTab('operator-profiles')">Operator Profiles</button>
+        <button class="tab-btn" onclick="switchMainTab('us-audience')">US Audience & Positioning</button>
+        <button class="tab-btn" onclick="switchMainTab('timeline')">Historical Timeline</button>
+        <button class="tab-btn" onclick="switchMainTab('references')">References & Sources</button>
+    </div>
+
+    <div class="sub-tabs" id="subtabs-revenue-market">
+        <button class="sub-tab-btn active" onclick="switchSubTab('revenue-market', 'rev-vgw')">VGW</button>
+        <button class="sub-tab-btn" onclick="switchSubTab('revenue-market', 'rev-crown')">Crown Coins</button>
+        <button class="sub-tab-btn" onclick="switchSubTab('revenue-market', 'rev-mcluck')">McLuck</button>
+        <button class="sub-tab-btn" onclick="switchSubTab('revenue-market', 'rev-modo')">Modo</button>
+        <button class="sub-tab-btn" onclick="switchSubTab('revenue-market', 'rev-pulsz')">Pulsz</button>
+        <button class="sub-tab-btn" onclick="switchSubTab('revenue-market', 'rev-stake')">Stake.us</button>
+        <button class="sub-tab-btn" onclick="switchSubTab('revenue-market', 'rev-all')">All Operators (Share)</button>
+    </div>
+
+    <div class="sub-tabs" id="subtabs-game-catalog">
+        <button class="sub-tab-btn active" onclick="switchSubTab('game-catalog', 'cat-chumba')">Chumba</button>
+        <button class="sub-tab-btn" onclick="switchSubTab('game-catalog', 'cat-lucky-slots')">LuckyLand Slots</button>
+        <button class="sub-tab-btn" onclick="switchSubTab('game-catalog', 'cat-lucky-casino')">LuckyLand Casino</button>
+        <button class="sub-tab-btn" onclick="switchSubTab('game-catalog', 'cat-crown')">Crown Coins</button>
+        <button class="sub-tab-btn" onclick="switchSubTab('game-catalog', 'cat-mcluck')">McLuck</button>
+        <button class="sub-tab-btn" onclick="switchSubTab('game-catalog', 'cat-modo')">Modo</button>
+        <button class="sub-tab-btn" onclick="switchSubTab('game-catalog', 'cat-pulsz')">Pulsz</button>
+        <button class="sub-tab-btn" onclick="switchSubTab('game-catalog', 'cat-stake')">Stake.us</button>
+        <button class="sub-tab-btn" onclick="switchSubTab('game-catalog', 'cat-map')">Provider Map</button>
+    </div>
+
+    <div class="sub-tabs" id="subtabs-operator-profiles">
+        <button class="sub-tab-btn active" onclick="switchSubTab('operator-profiles', 'prof-chumba')">Chumba Casino</button>
+        <button class="sub-tab-btn" onclick="switchSubTab('operator-profiles', 'prof-lucky-slots')">LuckyLand Slots</button>
+        <button class="sub-tab-btn" onclick="switchSubTab('operator-profiles', 'prof-lucky-casino')">LuckyLand Casino</button>
+        <button class="sub-tab-btn" onclick="switchSubTab('operator-profiles', 'prof-crown')">Crown Coins</button>
+        <button class="sub-tab-btn" onclick="switchSubTab('operator-profiles', 'prof-mcluck')">McLuck</button>
+        <button class="sub-tab-btn" onclick="switchSubTab('operator-profiles', 'prof-modo')">Modo</button>
+        <button class="sub-tab-btn" onclick="switchSubTab('operator-profiles', 'prof-pulsz')">Pulsz</button>
+        <button class="sub-tab-btn" onclick="switchSubTab('operator-profiles', 'prof-stake')">Stake.us</button>
+    </div>
+</div>
+
+<div class="content-container">
+    <div id="exec-summary" class="tab-pane active">
+        <div class="grid-2">
+            <div class="card">
+                <h3>Total Market Size (2019-2026E)</h3>
+                <div class="chart-container"><canvas id="chart-total-market"></canvas></div>
             </div>
-            <div class="hidden sm:block text-2xl">
-                &#127920; <!-- Slot machine unicode -->
+            <div class="card">
+                <h3>VGW Market Share Decline (2019-2026E)</h3>
+                <div class="chart-container"><canvas id="chart-vgw-share"></canvas></div>
             </div>
         </div>
         
-        <!-- Navigation Tabs -->
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <nav class="-mb-px flex space-x-8" aria-label="Tabs">
-                <button onclick="switchTab('overview')" id="tab-overview" class="tab-active whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm transition-colors duration-200">
-                    Market Overview
-                </button>
-                <button onclick="switchTab('operators')" id="tab-operators" class="tab-inactive whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm transition-colors duration-200">
-                    Operator Deep Dive
-                </button>
-            </nav>
+        <div class="grid-2">
+            <div class="card">
+                <h3>Operator Revenue Comparison (2024 vs 2026E)</h3>
+                <div class="chart-container"><canvas id="chart-operator-comparison"></canvas></div>
+            </div>
+            <div class="card">
+                <h3>Key Strategic Insights</h3>
+                <ul>
+                    <li>VGW market share fell from ~97.8% (2019) to ~21.4% projected (2026E).</li>
+                    <li>Total market grew from $460M (2019) to $12,515M (2025E); expected ~10% decline in 2026 from regulatory exits (adjusting base assumptions vs 2026E adjusted aggregate).</li>
+                    <li>Completed registrations are down ~40% over two years.</li>
+                    <li>Purchaser count declined 13% over six months.</li>
+                    <li>~$390M annual revenue is at risk under a 10% TAM decline scenario.</li>
+                </ul>
+                <div style="margin-top: 20px; background-color: var(--primary-bg); color: white; padding: 15px; border-radius: 8px;">
+                    <h4 style="margin-bottom: 10px;">Live Ops Feature Count Summary (out of 13)</h4>
+                    <div style="display: flex; justify-content: space-between; text-align: center;">
+                        <div><span class="highlight-number" style="color: var(--positive-live);">13</span> Crown Coins</div>
+                        <div><span class="highlight-number" style="color: var(--warning-secondary);">12</span> Modo</div>
+                        <div><span class="highlight-number" style="color: var(--alert-critical);">4</span> Chumba</div>
+                    </div>
+                </div>
+            </div>
         </div>
-    </header>
+    </div>
 
-    <!-- Main Content Area -->
-    <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
-        
-        <!-- VIEW 1: Market Overview -->
-        <section id="view-overview" class="space-y-8 animate-fade-in">
-            <div class="bg-white p-6 rounded-xl shadow-sm border border-stone-200">
-                <h2 class="text-xl font-bold text-stone-900 mb-2">About the Market Landscape</h2>
-                <p class="text-stone-600 leading-relaxed">
-                    This section provides a macro-level view of the US social sweepstakes casino market. It compares the selected operators based on estimated annual revenue and monthly web traffic. The data clearly illustrates the massive scale of VGW Holdings (Chumba, LuckyLand, Global Poker) compared to rapid-growth challengers like Modo and Crown Coins. <em>Note: As these are private entities, all financial and traffic figures are estimates synthesized from public reports, traffic analysis tools, and industry trends.</em>
-                </p>
+    <div id="revenue-market" class="tab-pane">
+        <div id="rev-vgw" class="sub-tab-pane active">
+            <div class="card">
+                <h3>VGW Revenue & Market Share</h3>
+                <div class="chart-container"><canvas id="chart-rev-vgw"></canvas></div>
+                <p style="margin-top: 15px;">* Includes Chumba, LuckyLand Slots, LuckyLand Casino, and Global Poker combined.</p>
             </div>
-
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                <!-- Market Share Chart -->
-                <div class="bg-white p-6 rounded-xl shadow-sm border border-stone-200 flex flex-col">
-                    <h3 class="text-lg font-semibold text-stone-900 mb-4">Estimated Revenue Share (Selected Operators)</h3>
-                    <div class="chart-container flex-grow">
-                        <canvas id="marketShareChart"></canvas>
-                    </div>
-                    <p class="text-xs text-stone-400 mt-4 text-center">Data: Internal estimates based on reported VGW billions and challenger ARR scaling.</p>
-                </div>
-
-                <!-- Web Traffic Chart -->
-                <div class="bg-white p-6 rounded-xl shadow-sm border border-stone-200 flex flex-col">
-                    <h3 class="text-lg font-semibold text-stone-900 mb-4">Estimated Monthly Web Traffic (Millions)</h3>
-                    <div class="chart-container flex-grow">
-                        <canvas id="trafficChart"></canvas>
-                    </div>
-                    <p class="text-xs text-stone-400 mt-4 text-center">Source: Aggregated SEO/Traffic tool estimates (e.g., SimilarWeb inferences).</p>
-                </div>
-            </div>
-        </section>
-
-        <!-- VIEW 2: Operator Deep Dive -->
-        <section id="view-operators" class="hidden space-y-6">
-            <div class="bg-white p-6 rounded-xl shadow-sm border border-stone-200">
-                <h2 class="text-xl font-bold text-stone-900 mb-2">Operator Profiles & Intelligence</h2>
-                <p class="text-stone-600 leading-relaxed mb-6">
-                    Select an operator below to view granular data regarding their corporate structure, financial estimates, app performance, and regulatory footprint. This section breaks down the specific findings requested for each entity. Flags (<span class="bg-amber-100 text-amber-800 text-xs px-2 py-0.5 rounded font-medium">EST</span>, <span class="bg-stone-100 text-stone-600 text-xs px-2 py-0.5 rounded font-medium">INF</span>) denote estimated or inferred data where exact public figures are unavailable.
-                </p>
-                
-                <!-- Operator Selector -->
-                <div class="flex flex-wrap gap-2" id="operator-pills">
-                    <!-- Pills injected via JS -->
-                </div>
-            </div>
-
-            <!-- Dynamic Operator Data Container -->
-            <div id="operator-content" class="grid grid-cols-1 md:grid-cols-2 gap-6 animate-fade-in hidden">
-                
-                <!-- Card 1: Corporate Profile -->
-                <div class="bg-white p-6 rounded-xl shadow-sm border border-stone-200">
-                    <div class="flex items-center justify-between mb-4">
-                        <h3 class="text-lg font-semibold text-stone-900">Corporate & Ownership</h3>
-                        <span class="text-2xl text-stone-400">&#127986;</span>
-                    </div>
-                    <ul class="space-y-3 text-sm">
-                        <li class="flex justify-between border-b border-stone-100 pb-2">
-                            <span class="text-stone-500">Operator</span>
-                            <span class="font-medium text-stone-900" id="op-name">-</span>
-                        </li>
-                        <li class="flex justify-between border-b border-stone-100 pb-2">
-                            <span class="text-stone-500">Parent/Owner</span>
-                            <span class="font-medium text-stone-900" id="op-parent">-</span>
-                        </li>
-                        <li class="flex justify-between border-b border-stone-100 pb-2">
-                            <span class="text-stone-500">Founded</span>
-                            <span class="font-medium text-stone-900" id="op-founded">-</span>
-                        </li>
-                        <li class="flex justify-between border-b border-stone-100 pb-2">
-                            <span class="text-stone-500">HQ / Incorporation</span>
-                            <span class="font-medium text-stone-900" id="op-hq">-</span>
-                        </li>
-                        <li class="flex justify-between pt-1">
-                            <span class="text-stone-500">Funding/Acquisitions</span>
-                            <span class="font-medium text-stone-900 text-right w-1/2" id="op-funding">-</span>
-                        </li>
-                    </ul>
-                </div>
-
-                <!-- Card 2: Financials & Growth -->
-                <div class="bg-white p-6 rounded-xl shadow-sm border border-stone-200 border-t-4 border-t-emerald-500">
-                    <div class="flex items-center justify-between mb-4">
-                        <h3 class="text-lg font-semibold text-stone-900">Revenue & Scale</h3>
-                        <span class="bg-amber-100 text-amber-800 text-xs px-2 py-1 rounded font-bold">ESTIMATED</span>
-                    </div>
-                    <div class="mb-4">
-                        <p class="text-xs text-stone-500 uppercase tracking-wide">Estimated Annual Revenue / Purchases</p>
-                        <p class="text-3xl font-bold text-stone-900 mt-1" id="op-revenue">-</p>
-                    </div>
-                    <div class="bg-stone-50 p-3 rounded text-sm text-stone-700 leading-relaxed border border-stone-100">
-                        <strong class="text-stone-900">Growth Milestones:</strong> <span id="op-milestones">-</span>
-                    </div>
-                </div>
-
-                <!-- Card 3: Web & App Performance -->
-                <div class="bg-white p-6 rounded-xl shadow-sm border border-stone-200 md:col-span-2 lg:col-span-1">
-                    <h3 class="text-lg font-semibold text-stone-900 mb-4">Web & App Performance</h3>
-                    
-                    <div class="grid grid-cols-2 gap-4 mb-6">
-                        <div class="bg-stone-50 p-4 rounded text-center border border-stone-100">
-                            <p class="text-xs text-stone-500 uppercase tracking-wide">Monthly Visits</p>
-                            <p class="text-xl font-bold text-stone-900 mt-1" id="op-traffic-vol">-</p>
-                            <span class="text-[10px] text-stone-400">ESTIMATED</span>
-                        </div>
-                        <div class="bg-stone-50 p-4 rounded text-center border border-stone-100">
-                            <p class="text-xs text-stone-500 uppercase tracking-wide">Primary GEO</p>
-                            <p class="text-xl font-bold text-stone-900 mt-1" id="op-geo">US / CA</p>
-                        </div>
-                    </div>
-
-                    <h4 class="text-sm font-semibold text-stone-700 mb-2 border-b border-stone-200 pb-1">Traffic Sources</h4>
-                    <div class="mini-chart-container mb-6">
-                        <canvas id="sourceChart"></canvas>
-                    </div>
-
-                    <h4 class="text-sm font-semibold text-stone-700 mb-2 border-b border-stone-200 pb-1">App Store Presence</h4>
-                    <ul class="space-y-2 text-sm text-stone-600" id="op-app-data">
-                        <!-- Injected via JS -->
-                    </ul>
-                </div>
-
-                <!-- Card 4: Additional Intelligence -->
-                <div class="bg-white p-6 rounded-xl shadow-sm border border-stone-200 md:col-span-2 lg:col-span-1">
-                    <h3 class="text-lg font-semibold text-stone-900 mb-4">Market & Regulatory Insights</h3>
-                    
-                    <div class="space-y-4">
-                        <div>
-                            <h4 class="text-sm font-bold text-stone-900 flex items-center gap-2">
-                                <span class="text-blue-600">&#128188;</span> LinkedIn & Hiring
-                            </h4>
-                            <p class="text-sm text-stone-600 mt-1 bg-stone-50 p-2 rounded" id="op-linkedin">-</p>
-                        </div>
-                        
-                        <div>
-                            <h4 class="text-sm font-bold text-stone-900 flex items-center gap-2">
-                                <span class="text-red-600">&#9878;</span> Regulatory & Filings
-                            </h4>
-                            <p class="text-sm text-stone-600 mt-1 bg-stone-50 p-2 rounded" id="op-regulatory">-</p>
-                        </div>
-
-                        <div>
-                            <h4 class="text-sm font-bold text-stone-900 flex items-center gap-2">
-                                <span class="text-emerald-600">&#128240;</span> Press Coverage Notes
-                            </h4>
-                            <p class="text-sm text-stone-600 mt-1 bg-stone-50 p-2 rounded" id="op-press">-</p>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-        </section>
-
-    </main>
-
-    <!-- Footer -->
-    <footer class="bg-stone-900 text-stone-400 py-6 mt-auto">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-sm">
-            <p>Data provided is a mix of publicly available information, industry estimates, and traffic approximations. Information should be verified independently for critical business decisions.</p>
         </div>
-    </footer>
+        <div id="rev-crown" class="sub-tab-pane">
+            <div class="card">
+                <h3>Crown Coins Revenue</h3>
+                <div class="chart-container"><canvas id="chart-rev-crown"></canvas></div>
+            </div>
+        </div>
+        <div id="rev-mcluck" class="sub-tab-pane">
+            <div class="card">
+                <h3>McLuck Estimated Revenue (via Patrianna Group)</h3>
+                <div class="chart-container"><canvas id="chart-rev-mcluck"></canvas></div>
+            </div>
+        </div>
+        <div id="rev-modo" class="sub-tab-pane">
+            <div class="card">
+                <h3>Modo Revenue</h3>
+                <div class="chart-container"><canvas id="chart-rev-modo"></canvas></div>
+            </div>
+        </div>
+        <div id="rev-pulsz" class="sub-tab-pane">
+            <div class="card">
+                <h3>Pulsz Revenue</h3>
+                <div class="chart-container"><canvas id="chart-rev-pulsz"></canvas></div>
+            </div>
+        </div>
+        <div id="rev-stake" class="sub-tab-pane">
+            <div class="card">
+                <h3>Stake.us Revenue</h3>
+                <div class="chart-container"><canvas id="chart-rev-stake"></canvas></div>
+            </div>
+        </div>
+        <div id="rev-all" class="sub-tab-pane">
+            <div class="card">
+                <h3>Total Market Share by Top Operators (2019-2026E)</h3>
+                <div class="chart-container"><canvas id="chart-rev-all"></canvas></div>
+            </div>
+        </div>
+    </div>
 
-    <script>
-        // --- Data Storage ---
-        // Simulating the research requested in the prompt.
-        const marketData = [
-            {
-                id: 'chumba',
-                name: 'Chumba Casino',
-                parent: 'VGW Holdings',
-                founded: '2012',
-                country: 'Australia (Perth)',
-                ownership: 'Private (Majority owned by Laurence Escalante)',
-                funding: 'Self-funded / Bootstrapped; highly profitable. No recent public VC rounds.',
-                revenueStr: '$1.5B+ (AUD 2B+)',
-                revenueEst: 1500, // Millions USD
-                milestones: '[EST] Generates majority of VGWs AUD 4.8B+ reported group revenue. Massive scale achieved post-2019.',
-                trafficStr: '~18.5M / month',
-                trafficEst: 18.5,
-                trafficSources: [55, 25, 15, 5], // Direct, Social, Search, Other
-                geo: 'US (>90%), CA',
-                appData: [
-                    '<strong>iOS:</strong> "Chumba Lite" available. ~4.4 stars, 50k+ reviews. Estimated 150k+ monthly downloads.',
-                    '<strong>Android:</strong> Historically APK direct download. Lite version available on Play Store.',
-                    '<strong>Note:</strong> Primary revenue driven by responsive mobile web.'
-                ],
-                linkedin: '[INF] VGW Holdings lists 1,500+ employees globally. Rapid expansion in Malta and Perth offices over the last 3 years.',
-                regulatory: 'No standard state gaming licenses (operates under sweepstakes laws). Faced regulatory pressure resulting in exit from Washington, Idaho, and Michigan. No public SEC filings.',
-                press: 'Heavy press in Australian Financial Review regarding VGW revenue figures and Escalante\'s billionaire status. Specific player counts rarely published officially.'
-            },
-            {
-                id: 'luckyland',
-                name: 'LuckyLand Slots / Casino',
-                parent: 'VGW Holdings',
-                founded: '2019',
-                country: 'Australia (Perth) / US ops',
-                ownership: 'Private (VGW Holdings)',
-                funding: 'Internal VGW launch/acquisition of IP. Backed by VGW capital.',
-                revenueStr: '$400M - $600M',
-                revenueEst: 500,
-                milestones: '[EST] Second largest revenue driver for VGW behind Chumba. Scaled rapidly via cross-promotion.',
-                trafficStr: '~6.2M / month',
-                trafficEst: 6.2,
-                trafficSources: [60, 20, 15, 5],
-                geo: 'US (>95%)',
-                appData: [
-                    '<strong>Android:</strong> Distinct strategy relying heavily on direct Android APK downloads from their site.',
-                    '<strong>iOS:</strong> Limited native presence; heavily optimized for mobile Safari.',
-                    '<strong>Note:</strong> LuckyLand "Slots" and "Casino" operate as the same primary ecosystem.'
-                ],
-                linkedin: 'Employees merged under VGW Holdings umbrella. Specific LuckyLand team size inferred at 100-200 dedicated staff.',
-                regulatory: 'Same regulatory profile as Chumba. Recently exited Michigan alongside other VGW brands following regulatory notices.',
-                press: 'Often mentioned in tandem with Chumba in financial reporting on VGW. Distinct brand identity focused on a slightly different demographic.'
-            },
-            {
-                id: 'globalpoker',
-                name: 'Global Poker',
-                parent: 'VGW Holdings',
-                founded: '2016',
-                country: 'Australia / Malta',
-                ownership: 'Private (VGW Holdings)',
-                funding: 'Internal VGW product.',
-                revenueStr: '$250M - $350M',
-                revenueEst: 300,
-                milestones: '[EST] The dominant social sweepstakes poker operator in the US. Consistent steady growth.',
-                trafficStr: '~4.1M / month',
-                trafficEst: 4.1,
-                trafficSources: [75, 5, 15, 5], // High direct due to player retention
-                geo: 'US (>90%), CA',
-                appData: [
-                    '<strong>iOS/Android:</strong> Strictly browser-based. No native app store presence due to historical app store restrictions on poker mechanics.',
-                    '<strong>Web:</strong> Highly optimized HTML5 client.'
-                ],
-                linkedin: 'VGW umbrella. Dedicated live ops and tournament management teams based largely in Malta.',
-                regulatory: 'Operates under the same VGW sweepstakes model. Faces less scrutiny than slots but exited the same restricted states.',
-                press: 'Regularly featured in poker media (PokerNews, etc.) sponsoring live events, lending legitimacy and driving acquisition.'
-            },
-            {
-                id: 'monopoly',
-                name: 'Monopoly Match',
-                parent: 'VGW / Partner (Unverified)',
-                founded: '2023/2024 (Beta)',
-                country: 'Unknown/Australia',
-                ownership: 'Likely licensing deal (Hasbro) / VGW test product',
-                funding: '[UNAVAILABLE] Experimental or licensed sub-brand.',
-                revenueStr: '< $10M (Early Phase)',
-                revenueEst: 5,
-                milestones: '[INF] Does not appear as a flagship revenue driver in VGW public reports. Appears to be a localized test or niche offering.',
-                trafficStr: '< 500k / month',
-                trafficEst: 0.4,
-                trafficSources: [40, 40, 10, 10],
-                geo: 'US',
-                appData: [
-                    '<strong>Stores:</strong> Data largely unavailable or conflated with standard SciPlay "Monopoly Slots". If a true VGW sweepstakes product, app store presence is negligible or in soft launch.'
-                ],
-                linkedin: 'No dedicated LinkedIn presence. Handled by generic VGW or partner staff.',
-                regulatory: 'Standard sweepstakes rules apply.',
-                press: '[UNAVAILABLE] No major press coverage found regarding this specific title as a major sweepstakes casino.'
-            },
-            {
-                id: 'crowncoins',
-                name: 'Crown Coins Casino',
-                parent: 'Sunflower Limited',
-                founded: '2023',
-                country: 'Cyprus / Isle of Man (Typical)',
-                ownership: 'Private (Sunflower Ltd)',
-                funding: '[UNAVAILABLE] Likely backed by private European gaming investors.',
-                revenueStr: '$15M - $30M ARR',
-                revenueEst: 20,
-                milestones: '[EST] Rapid growth in late 2023/2024. Aggressive user acquisition scaling.',
-                trafficStr: '~1.8M / month',
-                trafficEst: 1.8,
-                trafficSources: [30, 40, 20, 10], // High social acquisition
-                geo: 'US (100%)',
-                appData: [
-                    '<strong>iOS:</strong> Strong focus on native app. 4.6+ stars. Aggressive ad spend driving estimated 50k+ monthly downloads.',
-                    '<strong>Android:</strong> Available via Play Store, performing well in casual casino charts.'
-                ],
-                linkedin: '[EST] Small, agile team (<50). Heavy reliance on outsourced development and marketing agencies.',
-                regulatory: 'Standard sweepstakes terms. Geofenced against WA, ID, MI, NV.',
-                press: 'Limited mainstream press. Gaining traction in affiliate marketing circles and sweepstakes review portals.'
-            },
-            {
-                id: 'modo',
-                name: 'Modo.us',
-                parent: 'ARB Gaming / Modo Group',
-                founded: '2023',
-                country: 'United States',
-                ownership: 'Private',
-                funding: 'Seed/Private funding. Specific figures unavailable.',
-                revenueStr: '$20M - $40M ARR',
-                revenueEst: 30,
-                milestones: '[EST] Notable for rapid UX development and aggressive affiliate program launch.',
-                trafficStr: '~2.5M / month',
-                trafficEst: 2.5,
-                trafficSources: [35, 30, 30, 5],
-                geo: 'US (100%)',
-                appData: [
-                    '<strong>Web-First:</strong> Currently heavily focused on a premium PWA (Progressive Web App) mobile browser experience rather than native app stores.',
-                    '<strong>UX:</strong> Highly rated by users for modern interface compared to legacy competitors.'
-                ],
-                linkedin: 'Small but visible US-based leadership team. ~20-40 employees listed, active in hiring marketing and compliance roles.',
-                regulatory: 'Standard sweepstakes compliance. Proactively monitoring state-level legislative changes.',
-                press: 'Featured in industry blogs for their VIP program and rapid market entry.'
-            }
-        ];
+    <div id="game-catalog" class="tab-pane">
+        <div id="cat-chumba" class="sub-tab-pane active">
+            <div class="card">
+                <h3>Chumba Casino Game Catalog</h3>
+                <p><strong>Estimated Game Count:</strong> 273 (games with ≥1 round played in 2026)</p>
+                <p><strong>Proprietary Share:</strong> 43%</p>
+                <p><strong>Live Dealer Available:</strong> Yes (PlaytechLive)</p>
+                <table style="margin-top: 15px;">
+                    <tr><th>Provider</th><th>Game Count</th></tr>
+                    <tr><td>VGW Proprietary / Golden Feather Studios</td><td>117</td></tr>
+                    <tr><td>Playtech</td><td>60</td></tr>
+                    <tr><td>G.Games / GGames</td><td>37</td></tr>
+                    <tr><td>PlaytechLive</td><td>28</td></tr>
+                    <tr><td>Relax Gaming</td><td>16</td></tr>
+                    <tr><td>Iconic21</td><td>8</td></tr>
+                    <tr><td>Slotmill</td><td>7</td></tr>
+                </table>
+            </div>
+        </div>
+        <div id="cat-lucky-slots" class="sub-tab-pane">
+            <div class="card">
+                <h3>LuckyLand Slots Game Catalog</h3>
+                <p><strong>Estimated Game Count:</strong> 150–300</p>
+                <p><strong>Proprietary Share:</strong> >80%</p>
+                <p><strong>Live Dealer Available:</strong> No</p>
+                <p><strong>Known Providers:</strong> VGW Proprietary / Golden Feather Studios, Aristocrat Gaming, Merkur Gaming, WMS.</p>
+            </div>
+        </div>
+        <div id="cat-lucky-casino" class="sub-tab-pane">
+            <div class="card">
+                <h3>LuckyLand Casino Game Catalog</h3>
+                <p><strong>Estimated Game Count:</strong> Scaling (newly launched late 2025)</p>
+                <p><strong>Proprietary Share:</strong> High</p>
+                <p><strong>Live Dealer Available:</strong> Yes</p>
+                <p><strong>Known Providers:</strong> VGW Proprietary / Golden Feather Studios, Playtech (live dealer).</p>
+            </div>
+        </div>
+        <div id="cat-crown" class="sub-tab-pane">
+            <div class="card">
+                <h3>Crown Coins Game Catalog</h3>
+                <p><strong>Estimated Game Count:</strong> 400–500</p>
+                <p><strong>Proprietary Share:</strong> ~10% (~6 exclusives + "Spinning Crowns")</p>
+                <p><strong>Live Dealer Available:</strong> Yes (Hidden in UI)</p>
+                <p><strong>Known Providers:</strong> Pragmatic Play, Hacksaw Gaming, Playson, RubyPlay, Relax Gaming, Playtech (live), Slotmill, M2Play, Skywind, Spinomenal, Booming Games.</p>
+            </div>
+        </div>
+        <div id="cat-mcluck" class="sub-tab-pane">
+            <div class="card">
+                <h3>McLuck Game Catalog</h3>
+                <p><strong>Estimated Game Count:</strong> 1,200–1,500+</p>
+                <p><strong>Proprietary Share:</strong> ~0%</p>
+                <p><strong>Live Dealer Available:</strong> Yes</p>
+                <p><strong>Known Providers:</strong> Pragmatic Play (180+), NetEnt, 3 Oaks Gaming, Playson, RubyPlay, BGaming, 24/7 Reels, Rogue, Gaming Realms (Slingo), Iconic21 (live), Evolution (live).</p>
+            </div>
+        </div>
+        <div id="cat-modo" class="sub-tab-pane">
+            <div class="card">
+                <h3>Modo Game Catalog</h3>
+                <p><strong>Estimated Game Count:</strong> 2,000+</p>
+                <p><strong>Proprietary Share:</strong> <5% (12 "Modo Originals")</p>
+                <p><strong>Live Dealer Available:</strong> Yes</p>
+                <p><strong>Known Providers:</strong> Pragmatic Play, Hacksaw Gaming, Relax Gaming, Novomatic, Booming Games, Habanero, Evoplay, 3 Oaks, Playson, NetGaming, Vivo Gaming, Iconic21, Octoplay, Atlantic Digital, King Show Games, Iron Dog Studios, BGaming, Live Play.</p>
+            </div>
+        </div>
+        <div id="cat-pulsz" class="sub-tab-pane">
+            <div class="card">
+                <h3>Pulsz Game Catalog</h3>
+                <p><strong>Estimated Game Count:</strong> 1,000–1,600</p>
+                <p><strong>Proprietary Share:</strong> <5% (proprietary scratchcards)</p>
+                <p><strong>Live Dealer Available:</strong> No</p>
+                <p><strong>Known Providers:</strong> Pragmatic Play (200+), Relax Gaming, Booming Games, BGaming, RubyPlay, Booongo, Habanero, 3 Oaks, M2Play, Playson, Playtech, Yggdrasil.</p>
+            </div>
+        </div>
+        <div id="cat-stake" class="sub-tab-pane">
+            <div class="card">
+                <h3>Stake.us Game Catalog</h3>
+                <p><strong>Estimated Game Count:</strong> 2,000+</p>
+                <p><strong>Proprietary Share:</strong> <5% by volume, disproportionately high by engagement (~50 "Stake Originals")</p>
+                <p><strong>Live Dealer Available:</strong> Yes</p>
+                <p><strong>Known Providers:</strong> Pragmatic Play (200+), Hacksaw Gaming, Evolution, Push Gaming, Titan Gaming, Massive Studios, Octoplay, OneTouch, BGaming, Print Studios, Booming Games, Slotmill.</p>
+            </div>
+        </div>
+        <div id="cat-map" class="sub-tab-pane">
+            <div class="card">
+                <h3>Cross-Operator Provider Ubiquity Map</h3>
+                <table>
+                    <tr><th>Provider</th><th>Platforms (of 8)</th><th>Where Observed</th></tr>
+                    <tr><td>Pragmatic Play</td><td>5+</td><td>Stake.us, McLuck, Modo, Crown Coins, Pulsz</td></tr>
+                    <tr><td>Hacksaw Gaming</td><td>4+</td><td>Stake.us, McLuck, Modo, Crown Coins</td></tr>
+                    <tr><td>Relax Gaming</td><td>4+</td><td>Chumba, Stake.us, Modo, Crown Coins, Pulsz</td></tr>
+                    <tr><td>Playtech</td><td>3</td><td>Chumba, LuckyLand Casino, Crown Coins</td></tr>
+                    <tr><td>Booming Games</td><td>3+</td><td>Modo, Crown Coins, Pulsz, Stake.us</td></tr>
+                    <tr><td>BGaming</td><td>3+</td><td>Modo, McLuck, Pulsz, Stake.us</td></tr>
+                    <tr><td>RubyPlay</td><td>3</td><td>Crown Coins, McLuck, Pulsz</td></tr>
+                    <tr><td>Playson</td><td>3+</td><td>Crown Coins, McLuck, Pulsz, Modo</td></tr>
+                    <tr><td>Golden Feather Studios</td><td>Exclusive</td><td>VGW brands only</td></tr>
+                    <tr><td>Live Play</td><td>1</td><td>Modo only</td></tr>
+                </table>
+            </div>
+        </div>
+    </div>
 
-        // --- State Management ---
-        let currentChartMarketShare = null;
-        let currentChartTraffic = null;
-        let currentChartSource = null;
+    <div id="feature-gap" class="tab-pane">
+        <div class="card">
+            <h3>Competitive Feature Gap Matrix (Live Ops)</h3>
+            <table>
+                <tr>
+                    <th>Feature</th>
+                    <th>Crown Coins</th>
+                    <th>Modo</th>
+                    <th>Chumba</th>
+                    <th>Gap Severity</th>
+                </tr>
+                <tr>
+                    <td>Purchase Funnel Optimization</td>
+                    <td class="matrix-cell status-live">LIVE</td>
+                    <td class="matrix-cell status-live">LIVE</td>
+                    <td class="matrix-cell status-missing">MISSING</td>
+                    <td>CRITICAL</td>
+                </tr>
+                <tr>
+                    <td>VIP / Loyalty Program</td>
+                    <td class="matrix-cell status-live">LIVE</td>
+                    <td class="matrix-cell status-live">LIVE</td>
+                    <td class="matrix-cell status-missing">MISSING</td>
+                    <td>CRITICAL</td>
+                </tr>
+                <tr>
+                    <td>Daily Login Bonus (SC)</td>
+                    <td class="matrix-cell status-live">LIVE</td>
+                    <td class="matrix-cell status-live">LIVE</td>
+                    <td class="matrix-cell status-live">LIVE</td>
+                    <td>HIGH</td>
+                </tr>
+                <tr>
+                    <td>Daily Missions / Challenges</td>
+                    <td class="matrix-cell status-live">LIVE</td>
+                    <td class="matrix-cell status-live">LIVE</td>
+                    <td class="matrix-cell status-live">LIVE</td>
+                    <td>HIGH</td>
+                </tr>
+                <tr>
+                    <td>Coinback / Cashback</td>
+                    <td class="matrix-cell status-live">LIVE</td>
+                    <td class="matrix-cell status-live">LIVE</td>
+                    <td class="matrix-cell status-missing">OPAQUE</td>
+                    <td>HIGH</td>
+                </tr>
+                <tr>
+                    <td>Referral Program</td>
+                    <td class="matrix-cell status-live">LIVE</td>
+                    <td class="matrix-cell status-live">LIVE</td>
+                    <td class="matrix-cell status-missing">MISSING</td>
+                    <td>HIGH</td>
+                </tr>
+                <tr>
+                    <td>Tournaments / Races</td>
+                    <td class="matrix-cell status-live">LIVE</td>
+                    <td class="matrix-cell status-live">LIVE</td>
+                    <td class="matrix-cell status-limited">LIMITED</td>
+                    <td>HIGH</td>
+                </tr>
+                <tr>
+                    <td>LiveOps Platform</td>
+                    <td class="matrix-cell status-live">LIVE</td>
+                    <td class="matrix-cell status-live">LIVE</td>
+                    <td class="matrix-cell status-limited">PARTIAL</td>
+                    <td>HIGH</td>
+                </tr>
+                <tr>
+                    <td>Mini-Games</td>
+                    <td class="matrix-cell status-live">LIVE</td>
+                    <td class="matrix-cell status-limited">LIMITED</td>
+                    <td class="matrix-cell status-limited">LIMITED</td>
+                    <td>MEDIUM</td>
+                </tr>
+                <tr>
+                    <td>Meta-Games / Progression</td>
+                    <td class="matrix-cell status-live">LIVE</td>
+                    <td class="matrix-cell status-live">LIVE</td>
+                    <td class="matrix-cell status-missing">MISSING</td>
+                    <td>MEDIUM</td>
+                </tr>
+                <tr>
+                    <td>Birthday / Milestone Rewards</td>
+                    <td class="matrix-cell status-live">LIVE</td>
+                    <td class="matrix-cell status-live">LIVE</td>
+                    <td class="matrix-cell status-missing">MISSING</td>
+                    <td>LOW</td>
+                </tr>
+                <tr>
+                    <td>Daily Prize Drops</td>
+                    <td class="matrix-cell status-live">LIVE</td>
+                    <td class="matrix-cell status-live">LIVE</td>
+                    <td class="matrix-cell status-live">LIVE</td>
+                    <td>LOW</td>
+                </tr>
+                <tr>
+                    <td>Progressive Jackpots</td>
+                    <td class="matrix-cell status-live">LIVE</td>
+                    <td class="matrix-cell status-live">LIVE</td>
+                    <td class="matrix-cell status-live">LIVE</td>
+                    <td>AHEAD</td>
+                </tr>
+            </table>
+            <p style="margin-top: 15px;" class="pending-text">* Note: Five operators (LuckyLand Slots, LuckyLand Casino, McLuck, Pulsz, Stake.us) are pending audit for feature matrices.</p>
+        </div>
+    </div>
 
-        // --- Initialization ---
-        document.addEventListener('DOMContentLoaded', () => {
-            renderMarketOverview();
-            buildOperatorSelector();
+    <div id="operator-profiles" class="tab-pane">
+        <div id="prof-chumba" class="sub-tab-pane active">
+            <div class="card">
+                <h3>Chumba Casino</h3>
+                <ul>
+                    <li><strong>Parent:</strong> VGW Holdings Pty Ltd</li>
+                    <li><strong>HQ:</strong> Perth, Australia; Malta; United States</li>
+                    <li><strong>Founded:</strong> ~2012</li>
+                    <li><strong>Ownership:</strong> Wholly owned by Laurence Escalante via LEO (A$2.1B valuation in Aug 2025)</li>
+                    <li><strong>Platform:</strong> Proprietary closed-loop; no third-party aggregator</li>
+                </ul>
+            </div>
+        </div>
+        <div id="prof-lucky-slots" class="sub-tab-pane">
+            <div class="card">
+                <h3>LuckyLand Slots</h3>
+                <ul>
+                    <li><strong>Parent:</strong> VGW Holdings Pty Ltd</li>
+                    <li><strong>HQ:</strong> Perth, Australia</li>
+                    <li><strong>Founded:</strong> ~2018</li>
+                    <li><strong>Platform:</strong> Proprietary closed-loop; shares VGW infrastructure</li>
+                </ul>
+            </div>
+        </div>
+        <div id="prof-lucky-casino" class="sub-tab-pane">
+            <div class="card">
+                <h3>LuckyLand Casino</h3>
+                <ul>
+                    <li><strong>Parent:</strong> VGW Holdings Pty Ltd</li>
+                    <li><strong>HQ:</strong> Perth, Australia</li>
+                    <li><strong>Launched:</strong> Late 2025</li>
+                    <li><strong>Platform:</strong> Proprietary; built on VGW Multi-Brand Platform (MBP)</li>
+                    <li><strong>Purpose:</strong> Dedicated live dealer and table game platform</li>
+                </ul>
+            </div>
+        </div>
+        <div id="prof-crown" class="sub-tab-pane">
+            <div class="card">
+                <h3>Crown Coins Casino</h3>
+                <ul>
+                    <li><strong>Parent:</strong> Sunflower Limited</li>
+                    <li><strong>HQ:</strong> Tel Aviv, Israel; US branch in Arlington, Virginia</li>
+                    <li><strong>Launched:</strong> 2023</li>
+                    <li><strong>Ownership:</strong> Privately held; no disclosed venture funding</li>
+                    <li><strong>Platform:</strong> Proprietary backend; direct B2B studio agreements</li>
+                </ul>
+            </div>
+        </div>
+        <div id="prof-mcluck" class="sub-tab-pane">
+            <div class="card">
+                <h3>McLuck Casino</h3>
+                <ul>
+                    <li><strong>Parent:</strong> B2Services OÜ (Estonia) / Patrianna Group</li>
+                    <li><strong>Launched:</strong> March 2023</li>
+                    <li><strong>Ownership:</strong> Privately held; multi-brand portfolio</li>
+                    <li><strong>Platform:</strong> Turnkey aggregator (SoftSwiss inferred)</li>
+                </ul>
+            </div>
+        </div>
+        <div id="prof-modo" class="sub-tab-pane">
+            <div class="card">
+                <h3>Modo</h3>
+                <ul>
+                    <li><strong>Parent:</strong> ARB Gaming LLC / ARB Interactive, Inc.</li>
+                    <li><strong>HQ:</strong> Miami, Florida; Scottsdale, Arizona</li>
+                    <li><strong>Founded:</strong> 2022</li>
+                    <li><strong>Ownership:</strong> Privately held; co-CEOs Patrick Fechtmeyer and Junwei Ye</li>
+                    <li><strong>Platform:</strong> Proprietary engine with direct B2B integrations</li>
+                    <li><strong>Notable M&A:</strong> Acquired Publishers Clearing House (PCH) late 2025/early 2026 for $7.1M</li>
+                </ul>
+            </div>
+        </div>
+        <div id="prof-pulsz" class="sub-tab-pane">
+            <div class="card">
+                <h3>Pulsz</h3>
+                <ul>
+                    <li><strong>Parent:</strong> Yellow Social Interactive (YSI)</li>
+                    <li><strong>HQ:</strong> Gibraltar</li>
+                    <li><strong>Founded:</strong> ~2020</li>
+                    <li><strong>Ownership:</strong> Privately held</li>
+                    <li><strong>Platform:</strong> Proprietary backend; Trustly for payments</li>
+                </ul>
+            </div>
+        </div>
+        <div id="prof-stake" class="sub-tab-pane">
+            <div class="card">
+                <h3>Stake.us</h3>
+                <ul>
+                    <li><strong>Parent:</strong> Medium Rare NV (Curaçao); Sweepsteaks Limited (Cyprus)</li>
+                    <li><strong>Founded:</strong> ~2022</li>
+                    <li><strong>Relationship:</strong> Sister brand to Stake.com</li>
+                    <li><strong>Platform:</strong> Proprietary engine; direct API integrations; crypto-only</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div id="us-audience" class="tab-pane">
+        <div class="card">
+            <h3>Brand Positioning Evidence</h3>
+            <table>
+                <tr><th>Operator</th><th>US-Identity Signals</th></tr>
+                <tr><td>Chumba Casino</td><td>None — neutral/global brand presentation</td></tr>
+                <tr><td>LuckyLand Slots</td><td>None</td></tr>
+                <tr><td>LuckyLand Casino</td><td>None</td></tr>
+                <tr><td>Crown Coins</td><td>App Store: "America's Favorite - Make It Yours Too!"; VIP hosts for North American players</td></tr>
+                <tr><td>McLuck</td><td><span class="pending-text">None documented</span></td></tr>
+                <tr><td>Modo</td><td>"America's fastest growing social casino platform"; NASCAR sponsor; BWT Alpine F1 partner with US-specific Las Vegas GP activations</td></tr>
+                <tr><td>Pulsz</td><td><span class="pending-text">None documented</span></td></tr>
+                <tr><td>Stake.us</td><td>Built specifically for US market; heavy US influencer marketing (Drake, Adin Ross)</td></tr>
+            </table>
+        </div>
+        <div class="grid-2">
+            <div class="card">
+                <h3>Web Traffic (Mar/Apr 2026)</h3>
+                <table>
+                    <tr><th>Operator</th><th>Monthly Visits</th><th>US Share</th><th>Mobile Share</th></tr>
+                    <tr><td>Chumba Casino</td><td>27.33M</td><td><span class="pending-text">Pending</span></td><td>94.41%</td></tr>
+                    <tr><td>LuckyLand Slots</td><td>5.20M</td><td><span class="pending-text">Pending</span></td><td>88.22%</td></tr>
+                    <tr><td>Crown Coins</td><td>67.99M (Mar)</td><td>97.42%</td><td>95.98%</td></tr>
+                    <tr><td>Modo</td><td>Category rank #13</td><td>Heavily US-concentrated</td><td>Mobile-dominant</td></tr>
+                </table>
+            </div>
+            <div class="card">
+                <h3>Native App Downloads (Early 2026)</h3>
+                <ul>
+                    <li><strong>100K+ monthly:</strong> Modo, Crown Coins, Fliff</li>
+                    <li><strong>~50K–100K:</strong> Chumba Lite, High 5 Casino, Thrillzz, Yotta</li>
+                    <li><strong>~50K:</strong> McLuck Casino, Pulsz</li>
+                </ul>
+            </div>
+        </div>
+        <div class="card">
+            <h3>State Exclusions & Regulatory Actions</h3>
+            <table>
+                <tr><th>Operator</th><th>Notable Excluded States (SC play)</th><th>Recent Regulatory Actions</th></tr>
+                <tr><td>Chumba Casino</td><td>ID, WA, MI, MT; NJ phased out July 2025</td><td>Maryland C&D; NJ phase-out</td></tr>
+                <tr><td>LuckyLand Slots</td><td>Similar to Chumba</td><td>Delaware C&D</td></tr>
+                <tr><td>Crown Coins</td><td>ID, LA, MI, MT, NV, WA; MD halted</td><td>Maryland C&D (June 2025)</td></tr>
+                <tr><td>McLuck</td><td>AL, CT, DE, GA, ID, KY, LA, MD, MI, MT, NV, NJ, NY, WA, WV</td><td>Baltimore lawsuit (March 2026)</td></tr>
+                <tr><td>Modo</td><td>AZ, CA, CT, DE, ID, LA, MD, MI, MT, NV, NJ, NY, PA, RI, TN, WA, WV</td><td>California exit (AB 831); Baltimore lawsuit</td></tr>
+                <tr><td>Pulsz</td><td><span class="pending-text">Pending</span></td><td>Baltimore lawsuit (March 2026)</td></tr>
+                <tr><td>Stake.us</td><td>NY, WA, ID, KY, MI, NV</td><td>Virginia class action; Baltimore lawsuit</td></tr>
+            </table>
+        </div>
+    </div>
+
+    <div id="timeline" class="tab-pane">
+        <div class="grid-2">
+            <div class="card">
+                <h3>Industry Timeline</h3>
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <strong>~2012</strong> - Chumba Casino founded by VGW.
+                    </div>
+                    <div class="timeline-item">
+                        <strong>~2018</strong> - VGW launches LuckyLand Slots.
+                    </div>
+                    <div class="timeline-item">
+                        <strong>2020</strong> - Pulsz launches proprietary platform.
+                    </div>
+                    <div class="timeline-item">
+                        <strong>2022</strong> - Stake.us launches specifically for US market with live dealer functionality. Modo founded.
+                    </div>
+                    <div class="timeline-item">
+                        <strong>March 2023</strong> - McLuck launches via B2Services.
+                    </div>
+                    <div class="timeline-item">
+                        <strong>2023</strong> - Crown Coins launches. Modo integrates Live Dealer.
+                    </div>
+                    <div class="timeline-item">
+                        <strong>2024</strong> - McLuck adds Live Dealer. Crown Coins integrates Playtech Live.
+                    </div>
+                    <div class="timeline-item">
+                        <strong>Late 2025</strong> - VGW launches LuckyLand Casino (MBP platform). Modo acquires PCH.
+                    </div>
+                    <div class="timeline-item">
+                        <strong>March 2026</strong> - Baltimore files lawsuit against major operators.
+                    </div>
+                </div>
+            </div>
+            <div class="card">
+                <h3>Catalog Evolution</h3>
+                <table>
+                    <tr><th>Operator</th><th>At/Near Launch</th><th>Current (Early 2026)</th></tr>
+                    <tr><td>Chumba Casino</td><td>Small proprietary catalog</td><td>273</td></tr>
+                    <tr><td>LuckyLand Slots</td><td>Small proprietary catalog</td><td>150–300</td></tr>
+                    <tr><td>Crown Coins</td><td>~100–200 (2023)</td><td>400–500</td></tr>
+                    <tr><td>McLuck</td><td>~300 (2023)</td><td>1,200–1,500+</td></tr>
+                    <tr><td>Modo</td><td>~300 (2022/2023)</td><td>2,000+</td></tr>
+                    <tr><td>Pulsz</td><td>Small (2020)</td><td>1,000–1,600</td></tr>
+                    <tr><td>Stake.us</td><td>Large (ported from Stake.com)</td><td>2,000+</td></tr>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div id="references" class="tab-pane">
+        <div class="card">
+            <h3>Primary & Data Sources</h3>
+            <ul>
+                <li> VGW Internal Data / EKG Market Sizing Estimates by Brand, December 2025 - December 2025 Market Breakdown.csv, Gemini Deep Research Consolidated Dataset.</li>
+                <li> Analyst Note: "Do NOT interpret this to mean we expect substantial growth from 2025 > 2026"</li>
+                <li> Analyst Note: "rather, view our 2026E figures above as what we believe accurately reflects the present/upcoming state of the market and the rough share of each operator relative to the total."</li>
+                <li> Analyst Note: "Our 1Q26 market report will upward adjust prior years if we increase our 2026 sizing."</li>
+                <li> Analyst Note: "We still feel that 2026 is likely to experience in the vicinity of a 10% decline vs. 2025 if other large states don't pass anti-industry legislation early in the year."</li>
+                <li> Analyst Note: "We still view the overall dynamic the same way: continued growth in most states, more-than-offset by the loss of some larger states."</li>
+            </ul>
+            <h3>Works Cited Listing</h3>
+            <ul>
+                <li> Works cited</li>
+                <li> Chumba Casino Review 2026 - GamesHub, <a href="https://www.gameshub.com/sweepstakes/chumba/" class="source-link">https://www.gameshub.com/sweepstakes/chumba/</a></li>
+                <li> LuckyLand Slots Casino Review: Games, Bonuses, and Is It Legit in 2026? | MEXC News, <a href="https://www.mexc.com/news/577160" class="source-link">https://www.mexc.com/news/577160</a></li>
+                <li> Luckyland Slots Sign Up Bonus in May 2026 - LegalSportsReport, <a href="https://www.legalsportsreport.com/sweepstakes-casinos/luckyland-slots/" class="source-link">https://www.legalsportsreport.com/sweepstakes-casinos/luckyland-slots/</a></li>
+                <li> LuckyLand Slots Review & Top Alternatives for US Players - Pokerati, <a href="https://pokerati.com/online/luckyland-slots-casino/" class="source-link">https://pokerati.com/online/luckyland-slots-casino/</a></li>
+                <li> Stake.us vs Stake.com | What Are the Differences in 2026? - Deadspin, <a href="https://deadspin.com/sweepstakes-casinos/reviews/stake-us/vs-stake-com/" class="source-link">https://deadspin.com/sweepstakes-casinos/reviews/stake-us/vs-stake-com/</a></li>
+                <li> McLuck Casino Review 2026: Games, Bonus Codes & More | ProfitDuel, <a href="https://www.profitduel.com/sweepstakes-casinos/reviews/mcluck" class="source-link">https://www.profitduel.com/sweepstakes-casinos/reviews/mcluck</a></li>
+                <li> Modo Casino Review 2026 – Promo Code & Free Coins - Gaming America, <a href="https://gamingamerica.com/gambling-sites/modo-casino" class="source-link">https://gamingamerica.com/gambling-sites/modo-casino</a></li>
+                <li> Modo.us Casino Review & My Verdict: Is It Legit? - Dimers, <a href="https://www.dimers.com/sweepstakes-casinos/modo-us" class="source-link">https://www.dimers.com/sweepstakes-casinos/modo-us</a></li>
+                <li> Stake US - Casino & Slots - App Store - Apple, <a href="https://apps.apple.com/us/app/stake-us-casino-slots/id6738114176" class="source-link">https://apps.apple.com/us/app/stake-us-casino-slots/id6738114176</a></li>
+                <li> McLuck Promo Code GRINDERS: 120k GC + 60 Free SC + chance at 500 Free SC!, <a href="https://rotogrinders.com/social-casinos/mcluck" class="source-link">https://rotogrinders.com/social-casinos/mcluck</a></li>
+                <li> Modo.us Casino review 2026, <a href="https://www.casino.org/us/sweepstakes-casinos/modo-us/" class="source-link">https://www.casino.org/us/sweepstakes-casinos/modo-us/</a></li>
+                <li> About VGW, <a href="https://www.vgw.co/company/" class="source-link">https://www.vgw.co/company/</a></li>
+                <li> LuckyLand Slots Casino Review May 2026 - LiveScore, <a href="https://www.livescore.com/en-us/online-casinos/sweepstakes/luckyland-slots/" class="source-link">https://www.livescore.com/en-us/online-casinos/sweepstakes/luckyland-slots/</a></li>
+                <li> Every online casino that looks like this is a SCAM.</li>
+                <li> Every single one, regardless of the brand name or website URL. Do not deposit your money. Details in the comments.</li>
+                <li> : r/gambling - Reddit, <a href="https://www.reddit.com/r/gambling/comments/1kzd2cp/every_online_casino_that_looks_like_this_is_a/" class="source-link">https://www.reddit.com/r/gambling/comments/1kzd2cp/every_online_casino_that_looks_like_this_is_a/</a></li>
+                <li> SOFTSWISS Shares Prediction Markets Report for iGaming Operators, <a href="https://www.softswiss.com/news/prediction-markets-report/" class="source-link">https://www.softswiss.com/news/prediction-markets-report/</a></li>
+                <li> SOFTSWISS Launches Fixed-Odds Prediction Markets for iGaming Operators, <a href="https://www.softswiss.com/news/prediction-markets-launch/" class="source-link">https://www.softswiss.com/news/prediction-markets-launch/</a></li>
+                <li> CrownCoins Casino - App Store - Apple, <a href="https://apps.apple.com/us/app/crowncoins-casino/id6450413462" class="source-link">https://apps.apple.com/us/app/crowncoins-casino/id6450413462</a></li>
+                <li> BWT Alpine Formula One Team announces social casino partnership with MODO.us, <a href="https://media.alpinecars.com/bwt-alpine-formula-one-team-announces-social-casino-partnership-with-modous/" class="source-link">https://media.alpinecars.com/bwt-alpine-formula-one-team-announces-social-casino-partnership-with-modous/</a></li>
+                <li> Modo Casino Expands Partnership With Spire Motorsports in 2026, <a href="https://www.spire-motorsports.com/news/2026/february/03/modo-casino-expands-partnership-with-spire-motorsports-in-2026" class="source-link">https://www.spire-motorsports.com/news/2026/february/03/modo-casino-expands-partnership-with-spire-motorsports-in-2026</a></li>
+                <li> Stake.us - HighStakesDB, <a href="https://highstakesdb.com/deals/crypto-poker-deals/stake-us" class="source-link">https://highstakesdb.com/deals/crypto-poker-deals/stake-us</a></li>
+                <li> Modo Casino Sweepstakes Rules - The Grueling Truth, <a href="https://thegruelingtruth.com/reviews/modo.us/sweepstakes/" class="source-link">https://thegruelingtruth.com/reviews/modo.us/sweepstakes/</a></li>
+                <li> McLuck Slots: Best & Cheapest Games to Play at McLuck Casino - Deadspin, <a href="https://deadspin.com/sweepstakes-casinos/reviews/mcluck/slots/" class="source-link">https://deadspin.com/sweepstakes-casinos/reviews/mcluck/slots/</a></li>
+                <li> McLuck Owner | Who Owns MC Luck? Company Info - The Grueling Truth, <a href="https://thegruelingtruth.com/reviews/mc-luck/owner/" class="source-link">https://thegruelingtruth.com/reviews/mc-luck/owner/</a></li>
+                <li> Pulsz App: How to Download & Play on Mobile in May 2026 - Action Network, <a href="https://www.actionnetwork.com/sweepstakes-casinos/pulsz/app" class="source-link">https://www.actionnetwork.com/sweepstakes-casinos/pulsz/app</a></li>
+                <li> Best Social Casinos 2026: Operator Guide - GammaSweep, <a href="https://gammasweep.com/blog/best-social-casinos-2026-operator-guide" class="source-link">https://gammasweep.com/blog/best-social-casinos-2026-operator-guide</a></li>
+                <li> Yellow Social Interactive for iPhone - App Store, <a href="https://apps.apple.com/us/developer/yellow-social-interactive/id1594248924" class="source-link">https://apps.apple.com/us/developer/yellow-social-interactive/id1594248924</a></li>
+                <li> Sites Like Pulsz: Top Social Casinos | Free Slots & Prizes - PokerNews, <a href="https://www.pokernews.com/free-online-games/social-casino-sites-like-pulsz.htm" class="source-link">https://www.pokernews.com/free-online-games/social-casino-sites-like-pulsz.htm</a></li>
+                <li> Crown Coins Casino Review 2026: Expert Insights and Rating - TheLines.com, <a href="https://www.thelines.com/casino/sweepstakes/crown-coins-casino/" class="source-link">https://www.thelines.com/casino/sweepstakes/crown-coins-casino/</a></li>
+                <li> What Are the Best Games to Play on Crown Coins Casino? - Deadspin, <a href="https://deadspin.com/sweepstakes-casinos/reviews/crown-coins/best-games/" class="source-link">https://deadspin.com/sweepstakes-casinos/reviews/crown-coins/best-games/</a></li>
+                <li> Crown Coins Casino Review: Is Crown Coins legit? - betstamp, <a href="https://betstamp.com/reviews/crown-coins-casino" class="source-link">https://betstamp.com/reviews/crown-coins-casino</a></li>
+                <li> Best Games to Play on Crown Coins Casino 2026: Find Top Games - TheLines.com, <a href="https://www.thelines.com/casino/sweepstakes/crown-coins-casino/best-games/" class="source-link">https://www.thelines.com/casino/sweepstakes/crown-coins-casino/best-games/</a></li>
+                <li> Best Casinos Like Chumba 2026 | Chumba Casino Sister Sites - The Grueling Truth, <a href="https://thegruelingtruth.com/online-casino/sweepstake-casino/sites-like/chumba-casino/" class="source-link">https://thegruelingtruth.com/online-casino/sweepstake-casino/sites-like/chumba-casino/</a></li>
+                <li> VGW Set to Launch Two New Sweepstakes Casinos: United Slots ..., <a href="https://www.igamingtoday.com/vgw-set-to-launch-two-new-sweepstakes-casinos-united-slots-and-luckyland-casino/" class="source-link">https://www.igamingtoday.com/vgw-set-to-launch-two-new-sweepstakes-casinos-united-slots-and-luckyland-casino/</a></li>
+                <li> VGW Expanding Portfolio Despite Regulator Headwinds - Triad City Beat, <a href="https://triad-city-beat.com/vgw-expanding-portfolio-despite-regulator-headwinds/" class="source-link">https://triad-city-beat.com/vgw-expanding-portfolio-despite-regulator-headwinds/</a></li>
+                <li> VGW Launches LuckyLand Casino Amid Regulatory Pressure ..., <a href="https://deadspin.com/legal-betting/vgw-launches-luckyland-casino-amid-regulatory-pressure/" class="source-link">https://deadspin.com/legal-betting/vgw-launches-luckyland-casino-amid-regulatory-pressure/</a></li>
+                <li> VGW Celebrates Launch of LuckyLand Casino, <a href="https://www.vgw.co/latest-news/vgw-celebrates-launch-of-luckyland-casino/" class="source-link">https://www.vgw.co/latest-news/vgw-celebrates-launch-of-luckyland-casino/</a></li>
+                <li> Modo.us Review 2026 | Is Modo.us a Trusted Brand? - Deadspin, <a href="https://deadspin.com/sweepstakes-casinos/reviews/modo-us/" class="source-link">https://deadspin.com/sweepstakes-casinos/reviews/modo-us/</a></li>
+                <li> LuckyLand Slots Casino Promo Code - Action Network, <a href="https://www.actionnetwork.com/sweepstakes-casinos/luckyland-slots" class="source-link">https://www.actionnetwork.com/sweepstakes-casinos/luckyland-slots</a></li>
+                <li> Crown Coins Casino Review 2026 | Rating, Testing & Analysis - Deadspin, <a href="https://deadspin.com/sweepstakes-casinos/reviews/crown-coins/" class="source-link">https://deadspin.com/sweepstakes-casinos/reviews/crown-coins/</a></li>
+                <li> Crown Coins Casino Live Dealer Games May 2026 - Action Network, <a href="https://www.actionnetwork.com/sweepstakes-casinos/crown-coins/live-dealer" class="source-link">https://www.actionnetwork.com/sweepstakes-casinos/crown-coins/live-dealer</a></li>
+                <li> Newest Crown Coins Casino Tips | How to Win More GC & SC - The Game Day, <a href="https://thegameday.com/sweepstakes-casinos/crown-coins/tips/" class="source-link">https://thegameday.com/sweepstakes-casinos/crown-coins/tips/</a></li>
+                <li> How Does Crown Coins Casino Work? Fully Explained - Deadspin, <a href="https://deadspin.com/sweepstakes-casinos/reviews/crown-coins/how-it-works/" class="source-link">https://deadspin.com/sweepstakes-casinos/reviews/crown-coins/how-it-works/</a></li>
+                <li> Best Real Money Online Casinos & Games | US Gambling Sites, <a href="https://chumbacasino.quora.com/Best-Real-Money-Online-Casinos-Games-US-Gambling-Sites" class="source-link">https://chumbacasino.quora.com/Best-Real-Money-Online-Casinos-Games-US-Gambling-Sites</a></li>
+                <li> Top US Real Time Gaming (RTG) - Online Casinos 2026, <a href="https://www.casino.org/us/software/real-time-gaming/" class="source-link">https://www.casino.org/us/software/real-time-gaming/</a></li>
+                <li> Chumba Casino Review And Free Chips Bonus - Alexa Healthcare, <a href="https://www.alexahealthcare.in/2026/02/03/chumba-casino-review-and-free-chips-bonus/" class="source-link">https://www.alexahealthcare.in/2026/02/03/chumba-casino-review-and-free-chips-bonus/</a></li>
+                <li> Top Realtime Gaming Casino Sites | APS Flooring & Carpet, <a href="https://www.apsflooringandcarpet.com/top-realtime-gaming-casino-sites/" class="source-link">https://www.apsflooringandcarpet.com/top-realtime-gaming-casino-sites/</a></li>
+                <li> Most Trusted Online Casinos for USA players curated by Experts - Only the BEST, <a href="https://professionalrakeback.com/online-casinos/best-usa-websites" class="source-link">https://professionalrakeback.com/online-casinos/best-usa-websites</a></li>
+                <li> CHUMBA CASINO...a better mousetrap? - Casinos General - AskGamblers, <a href="https://forum.askgamblers.com/topic/7412-chumba-casinoa-better-mousetrap/" class="source-link">https://forum.askgamblers.com/topic/7412-chumba-casinoa-better-mousetrap/</a></li>
+                <li> Sites Like Chumba Casino: Sister Sites & Top Alternatives in 2026 - Phandroid, <a href="https://phandroid.com/sweepstakes/sites-like/chumba-casino/" class="source-link">https://phandroid.com/sweepstakes/sites-like/chumba-casino/</a></li>
+                <li> LuckyLand Slots Review 2026 | Social Casino for US Players - PokerListings, <a href="https://www.pokerlistings.com/casino-sites/luckyland-slots-casino" class="source-link">https://www.pokerlistings.com/casino-sites/luckyland-slots-casino</a></li>
+                <li> Crown Coins Casino Ownership and Details Explained - TheLines.com, <a href="https://www.thelines.com/casino/sweepstakes/crown-coins-casino/ownership/" class="source-link">https://www.thelines.com/casino/sweepstakes/crown-coins-casino/ownership/</a></li>
+                <li> Who Owns McLuck Casino in 2026 - Deadspin, <a href="https://deadspin.com/sweepstakes-casinos/reviews/mcluck/ownership/" class="source-link">https://deadspin.com/sweepstakes-casinos/reviews/mcluck/ownership/</a></li>
+                <li> McLuck Casino: Jackpot Slots - Apps on Google Play, <a href="https://play.google.com/store/apps/details?id=com.mcluck&hl=en_US" class="source-link">https://play.google.com/store/apps/details?id=com.mcluck&hl=en_US</a></li>
+                <li> Diversidad afectivo - sexual. Hablemos - ecca.edu, <a href="https://ecca.edu.es/curso/diversidad-afect-sexual-hablemos/" class="source-link">https://ecca.edu.es/curso/diversidad-afect-sexual-hablemos/</a></li>
+                <li> Global Tech Firm Opens Prediction Market Infrastructure to Businesses Worldwide, <a href="https://www.prnewswire.com/news-releases/global-tech-firm-opens-prediction-market-infrastructure-to-businesses-worldwide-302735077.html" class="source-link">https://www.prnewswire.com/news-releases/global-tech-firm-opens-prediction-market-infrastructure-to-businesses-worldwide-302735077.html</a></li>
+                <li> SOFTSWISS Casino Platform: 13 years of reliable performance in regulated markets, <a href="https://igamingbusiness.com/company-news/softswiss-casino-platform-13-years-of-reliable-performance-in-regulated-markets/" class="source-link">https://igamingbusiness.com/company-news/softswiss-casino-platform-13-years-of-reliable-performance-in-regulated-markets/</a></li>
+                <li> Yellow Social Interactive, <a href="https://www.yellowsocialinteractive.com/" class="source-link">https://www.yellowsocialinteractive.com/</a></li>
+                <li> About Us - Yellow Social Interactive, <a href="https://www.yellowsocialinteractive.com/about-us/" class="source-link">https://www.yellowsocialinteractive.com/about-us/</a></li>
+                <li> Sc casinos :Your account with Trustly (Yellow Social Interactive payments partner) is overdue : r/gambling - Reddit, <a href="https://www.reddit.com/r/gambling/comments/1onzyak/sc_casinos_your_account_with_trustly_yellow/" class="source-link">https://www.reddit.com/r/gambling/comments/1onzyak/sc_casinos_your_account_with_trustly_yellow/</a></li>
+                <li> City of Baltimore Sues Major Social Casino Operators for Illegal Online Gambling Disguised as Free Games, Sweepstakes |</li>
+                <li> DiCello Levitt, <a href="https://dicellolevitt.com/city-of-baltimore-sues-major-social-casino-operators/" class="source-link">https://dicellolevitt.com/city-of-baltimore-sues-major-social-casino-operators/</a></li>
+                <li> Sunflower Limited (Crown Coins Casino) - Maryland Lottery and Gaming, <a href="https://www.mdgaming.com/wp-content/uploads/2025/06/Sunflower-Limited-dba-Crown-Coins-Casino-CD-Letter.pdf" class="source-link">https://www.mdgaming.com/wp-content/uploads/2025/06/Sunflower-Limited-dba-Crown-Coins-Casino-CD-Letter.pdf</a></li>
+                <li> Chumba Casino and VGW Phasing Out Sweeps Coins In New Jersey - GamesHub, <a href="https://www.gameshub.com/news/news/chumba-casino-and-vgw-phasing-out-sweeps-coins-in-new-jersey-2741814/" class="source-link">https://www.gameshub.com/news/news/chumba-casino-and-vgw-phasing-out-sweeps-coins-in-new-jersey-2741814/</a></li>
+                <li> Class Action Targets Stake.us, Drake and Adin Ross for Illegal Gambling Promotion, <a href="https://www.loeb.com/en/insights/passle/2026/01/class-action-targets-stakeus-drake-and-adin-ross-for-illegal-gambling-promotion" class="source-link">https://www.loeb.com/en/insights/passle/2026/01/class-action-targets-stakeus-drake-and-adin-ross-for-illegal-gambling-promotion</a></li>
+                <li> Chumba Casino Review - Gambling News, <a href="https://www.gamblingnews.com/casino/chumba-casino/" class="source-link">https://www.gamblingnews.com/casino/chumba-casino/</a></li>
+                <li> Crown Coins Casino Slots: Top Games, High RTP, and Big Wins in May 2026 - Lineups, <a href="https://www.lineups.com/sweepstakes-casinos/games/slots/crown-coins/" class="source-link">https://www.lineups.com/sweepstakes-casinos/games/slots/crown-coins/</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Hardcoded Data Arrays
+    const years = ['2019', '2020', '2021', '2022', '2023', '2024', '2025E', '2026E'];
+    const dataMarketTotal = [460, 1249, 2203, 3640, 5992, 10656, 12515, 18125];
+    const dataVGW = [450, 1220, 2100, 2867, 3604, 4570, 3885, 3885];
+    const dataVGWShare = [97.8, 97.7, 95.3, 78.8, 60.1, 42.9, 31.0, 21.4];
+    
+    // Revenue Data
+    const revCrown = [0, 0, 0, 0, 0, 200, 1000, 3000];
+    const revMcluckPatrianna = [0, 0, 0, 0, 500, 1750, 1900, 2500]; // Proxying McLuck as Patrianna group for standard sizing alignment 
+    const revModo = [0, 0, 0, 0, 13, 380, 900, 1000];
+    const revPulsz = [0, 10, 70, 368, 632, 1000, 1200, 1200];
+    const revStake = [0, 0, 0, 150, 600, 1300, 1400, 2500];
+
+    // Global Chart Configuration settings
+    Chart.defaults.color = '#20304f';
+    Chart.defaults.font.family = '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif';
+
+    const colors = {
+        primary: '#2281e0',
+        secondary: '#f3771b',
+        tertiary: '#fbbc04',
+        quaternary: '#46bdc6',
+        quinary: '#78b6ff'
+    };
+
+    let charts = {};
+
+    function initCharts() {
+        // Tab 1: Exec Summary Charts
+        charts['chart-total-market'] = new Chart(document.getElementById('chart-total-market'), {
+            type: 'line',
+            data: {
+                labels: years,
+                datasets: [{
+                    label: 'Total Market ($M)',
+                    data: dataMarketTotal,
+                    borderColor: colors.primary,
+                    backgroundColor: colors.primary + '33',
+                    fill: true,
+                    tension: 0.3
+                }]
+            },
+            options: { responsive: true, maintainAspectRatio: false }
         });
 
-        // --- Navigation Logic ---
-        function switchTab(tabName) {
-            // Update Tab Styling
-            document.getElementById('tab-overview').className = tabName === 'overview' ? 'tab-active whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm transition-colors duration-200' : 'tab-inactive whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm transition-colors duration-200';
-            document.getElementById('tab-operators').className = tabName === 'operators' ? 'tab-active whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm transition-colors duration-200' : 'tab-inactive whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm transition-colors duration-200';
-            
-            // Toggle Views
-            if (tabName === 'overview') {
-                document.getElementById('view-overview').classList.remove('hidden');
-                document.getElementById('view-operators').classList.add('hidden');
-            } else {
-                document.getElementById('view-overview').classList.add('hidden');
-                document.getElementById('view-operators').classList.remove('hidden');
-                // Select first operator by default if none selected
-                if(document.getElementById('operator-content').classList.contains('hidden')) {
-                    selectOperator(marketData[0].id);
-                }
+        charts['chart-vgw-share'] = new Chart(document.getElementById('chart-vgw-share'), {
+            type: 'line',
+            data: {
+                labels: years,
+                datasets: [{
+                    label: 'VGW Share (%)',
+                    data: dataVGWShare,
+                    borderColor: colors.secondary,
+                    backgroundColor: colors.secondary + '33',
+                    fill: true,
+                    tension: 0.3
+                }]
+            },
+            options: { responsive: true, maintainAspectRatio: false }
+        });
+
+        charts['chart-operator-comparison'] = new Chart(document.getElementById('chart-operator-comparison'), {
+            type: 'bar',
+            data: {
+                labels: ['VGW', 'Crown Coins', 'Patrianna (McLuck)', 'Modo', 'Pulsz', 'Stake.us'],
+                datasets: [
+                    { label: '2024 ($M)', data: [4570, 200, 1750, 380, 1000, 1300], backgroundColor: colors.quaternary },
+                    { label: '2026E ($M)', data: [3885, 3000, 2500, 1000, 1200, 2500], backgroundColor: colors.primary }
+                ]
+            },
+            options: { responsive: true, maintainAspectRatio: false }
+        });
+
+        // Tab 2: Individual Revenue Charts
+        createBarChart('chart-rev-vgw', 'VGW Revenue ($M)', dataVGW, colors.primary);
+        createBarChart('chart-rev-crown', 'Crown Coins Revenue ($M)', revCrown, colors.secondary);
+        createBarChart('chart-rev-mcluck', 'Patrianna/McLuck Revenue ($M)', revMcluckPatrianna, colors.tertiary);
+        createBarChart('chart-rev-modo', 'Modo Revenue ($M)', revModo, colors.quaternary);
+        createBarChart('chart-rev-pulsz', 'Pulsz Revenue ($M)', revPulsz, colors.quinary);
+        createBarChart('chart-rev-stake', 'Stake.us Revenue ($M)', revStake, '#9d4edd');
+
+        // Tab 2: All Operators Area Chart
+        charts['chart-rev-all'] = new Chart(document.getElementById('chart-rev-all'), {
+            type: 'bar',
+            data: {
+                labels: years,
+                datasets: [
+                    { label: 'VGW', data: dataVGW, backgroundColor: colors.primary, stack: 'Stack 0' },
+                    { label: 'Crown Coins', data: revCrown, backgroundColor: colors.secondary, stack: 'Stack 0' },
+                    { label: 'Patrianna', data: revMcluckPatrianna, backgroundColor: colors.tertiary, stack: 'Stack 0' },
+                    { label: 'Modo', data: revModo, backgroundColor: colors.quaternary, stack: 'Stack 0' },
+                    { label: 'Pulsz', data: revPulsz, backgroundColor: colors.quinary, stack: 'Stack 0' },
+                    { label: 'Stake.us', data: revStake, backgroundColor: '#9d4edd', stack: 'Stack 0' }
+                ]
+            },
+            options: { 
+                responsive: true, 
+                maintainAspectRatio: false,
+                scales: { x: { stacked: true }, y: { stacked: true } }
+            }
+        });
+    }
+
+    function createBarChart(id, label, data, color) {
+        charts[id] = new Chart(document.getElementById(id), {
+            type: 'bar',
+            data: {
+                labels: years,
+                datasets: [{ label: label, data: data, backgroundColor: color }]
+            },
+            options: { responsive: true, maintainAspectRatio: false }
+        });
+    }
+
+    function switchMainTab(tabId) {
+        // Hide all main tab panes
+        document.querySelectorAll('.tab-pane').forEach(el => el.classList.remove('active'));
+        // Hide all subtabs navigation rows
+        document.querySelectorAll('.sub-tabs').forEach(el => el.classList.remove('active'));
+        // Deactivate all main tab buttons
+        document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+
+        // Activate the chosen tab content
+        document.getElementById(tabId).classList.add('active');
+        
+        // Find and activate corresponding main tab button
+        event.currentTarget.classList.add('active');
+
+        // Check if there's a subtab menu for this main tab
+        let subTabMenu = document.getElementById('subtabs-' + tabId);
+        if (subTabMenu) {
+            subTabMenu.classList.add('active');
+            // Check which subtab is active and make sure its pane is active
+            let activeSubBtn = subTabMenu.querySelector('.sub-tab-btn.active');
+            if (activeSubBtn) {
+                // Dispatch click to ensure correct display
+                activeSubBtn.click();
             }
         }
+    }
 
-        // --- View 1: Market Overview Rendering ---
-        function renderMarketOverview() {
-            const labels = marketData.map(d => d.name);
-            const revData = marketData.map(d => d.revenueEst);
-            const trafficData = marketData.map(d => d.trafficEst);
-            const bgColors = [
-                '#b45309', // amber-700 (Chumba)
-                '#d97706', // amber-600 (LuckyLand)
-                '#fbbf24', // amber-400 (Global Poker)
-                '#a8a29e', // stone-400 (Monopoly)
-                '#0ea5e9', // sky-500 (Crown Coins)
-                '#10b981'  // emerald-500 (Modo)
-            ];
+    function switchSubTab(parentTabId, subTabId) {
+        // Find parent container
+        let parent = document.getElementById(parentTabId);
+        // Hide all sub-tab panes inside this parent
+        parent.querySelectorAll('.sub-tab-pane').forEach(el => el.classList.remove('active'));
+        // Deactivate all sub-tab buttons for this specific menu
+        document.getElementById('subtabs-' + parentTabId).querySelectorAll('.sub-tab-btn').forEach(el => el.classList.remove('active'));
 
-            // 1. Market Share (Revenue) Doughnut
-            const ctxShare = document.getElementById('marketShareChart').getContext('2d');
-            if(currentChartMarketShare) currentChartMarketShare.destroy();
-            currentChartMarketShare = new Chart(ctxShare, {
-                type: 'doughnut',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        data: revData,
-                        backgroundColor: bgColors,
-                        borderWidth: 2,
-                        borderColor: '#ffffff'
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: { position: 'right', labels: { boxWidth: 12, font: { family: 'Inter' } } },
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    return ` ${context.label}: $${context.raw}M (Est)`;
-                                }
-                            }
-                        }
-                    },
-                    cutout: '60%'
-                }
-            });
+        // Activate clicked button and target pane
+        event.currentTarget.classList.add('active');
+        document.getElementById(subTabId).classList.add('active');
+    }
 
-            // 2. Traffic Bar Chart
-            const ctxTraffic = document.getElementById('trafficChart').getContext('2d');
-            if(currentChartTraffic) currentChartTraffic.destroy();
-            currentChartTraffic = new Chart(ctxTraffic, {
-                type: 'bar',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        label: 'Est. Monthly Visits (Millions)',
-                        data: trafficData,
-                        backgroundColor: '#78716c', // stone-500
-                        borderRadius: 4
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: { display: false },
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    return ` ${context.raw}M Visits`;
-                                }
-                            }
-                        }
-                    },
-                    scales: {
-                        y: { beginAtZero: true, grid: { color: '#f5f5f4' } },
-                        x: { grid: { display: false }, ticks: { font: { family: 'Inter' } } }
-                    }
-                }
-            });
-        }
-
-        // --- View 2: Operator Deep Dive Logic ---
-        function buildOperatorSelector() {
-            const container = document.getElementById('operator-pills');
-            marketData.forEach(op => {
-                const btn = document.createElement('button');
-                btn.className = 'px-4 py-2 rounded-full text-sm font-medium border border-stone-200 bg-white text-stone-600 hover:bg-stone-50 transition-colors operator-btn';
-                btn.innerText = op.name;
-                btn.dataset.id = op.id;
-                btn.onclick = () => selectOperator(op.id);
-                container.appendChild(btn);
-            });
-        }
-
-        function selectOperator(id) {
-            // Update active pill styling
-            document.querySelectorAll('.operator-btn').forEach(btn => {
-                if (btn.dataset.id === id) {
-                    btn.classList.add('bg-stone-800', 'text-white', 'border-stone-800');
-                    btn.classList.remove('bg-white', 'text-stone-600', 'border-stone-200');
-                } else {
-                    btn.classList.remove('bg-stone-800', 'text-white', 'border-stone-800');
-                    btn.classList.add('bg-white', 'text-stone-600', 'border-stone-200');
-                }
-            });
-
-            const data = marketData.find(op => op.id === id);
-            if(!data) return;
-
-            // Reveal content container
-            document.getElementById('operator-content').classList.remove('hidden');
-
-            // Populate Text Fields
-            document.getElementById('op-name').innerText = data.name;
-            document.getElementById('op-parent').innerText = data.parent;
-            document.getElementById('op-founded').innerText = data.founded;
-            document.getElementById('op-hq').innerText = data.country;
-            document.getElementById('op-funding').innerText = data.funding;
-            
-            document.getElementById('op-revenue').innerText = data.revenueStr;
-            document.getElementById('op-milestones').innerText = data.milestones;
-            
-            document.getElementById('op-traffic-vol').innerText = data.trafficStr;
-            document.getElementById('op-geo').innerText = data.geo;
-            
-            // App Data List
-            const appList = document.getElementById('op-app-data');
-            appList.innerHTML = '';
-            data.appData.forEach(item => {
-                const li = document.createElement('li');
-                li.innerHTML = `&bull; ${item}`;
-                appList.appendChild(li);
-            });
-
-            document.getElementById('op-linkedin').innerText = data.linkedin;
-            document.getElementById('op-regulatory').innerText = data.regulatory;
-            document.getElementById('op-press').innerText = data.press;
-
-            // Render Source Chart for Operator
-            renderSourceChart(data.trafficSources);
-        }
-
-        function renderSourceChart(dataArr) {
-            const ctx = document.getElementById('sourceChart').getContext('2d');
-            if(currentChartSource) currentChartSource.destroy();
-            
-            currentChartSource = new Chart(ctx, {
-                type: 'doughnut',
-                data: {
-                    labels: ['Direct', 'Social', 'Search', 'Referral/Other'],
-                    datasets: [{
-                        data: dataArr,
-                        backgroundColor: ['#292524', '#0284c7', '#ea580c', '#a8a29e'],
-                        borderWidth: 1,
-                        borderColor: '#ffffff'
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 10, family: 'Inter' } } },
-                        tooltip: { callbacks: { label: function(context) { return ` ${context.label}: ${context.raw}%`; } } }
-                    },
-                    cutout: '70%'
-                }
-            });
-        }
-    </script>
+    // Initialize charts on load
+    window.onload = function() {
+        initCharts();
+    };
+</script>
 </body>
 </html>
