@@ -46,11 +46,35 @@
     }
 
     h1 {
-      margin: 0 0 24px;
+      margin: 0;
       font-size: clamp(1.65rem, 3vw, 2.65rem);
       line-height: 1.12;
       font-weight: 700;
       letter-spacing: 0;
+    }
+
+    .brand-row {
+      align-items: center;
+      display: flex;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .logo-tile {
+      align-items: center;
+      background: #fff;
+      border-radius: 12px;
+      display: inline-flex;
+      flex: 0 0 auto;
+      justify-content: center;
+      padding: 8px;
+    }
+
+    .logo-tile img {
+      display: block;
+      height: 46px;
+      object-fit: contain;
+      width: auto;
     }
 
     .tabs {
@@ -484,6 +508,19 @@
         font-size: 0.9rem;
       }
 
+      .brand-row {
+        gap: 12px;
+      }
+
+      .logo-tile {
+        border-radius: 10px;
+        padding: 6px;
+      }
+
+      .logo-tile img {
+        height: 38px;
+      }
+
       .chart-card {
         overflow-x: visible;
       }
@@ -507,7 +544,12 @@
 <body>
   <header class="site-header">
     <div class="header-inner">
-      <h1>VGW Social Casino Positioning Research</h1>
+      <div class="brand-row">
+        <span class="logo-tile">
+          <img src="assets/lg-logo.png" alt="Liquid &amp; Grit logo">
+        </span>
+        <h1>VGW Social Casino Positioning Research</h1>
+      </div>
       <nav class="tabs" role="tablist" aria-label="Dashboard sections">
         <button class="tab-button" id="tab-positioning" type="button" role="tab" aria-selected="true" aria-controls="panel-positioning" data-tab="positioning">2026 Positioning</button>
         <button class="tab-button" id="tab-revenue" type="button" role="tab" aria-selected="false" aria-controls="panel-revenue" data-tab="revenue">Revenue</button>
