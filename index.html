@@ -179,6 +179,44 @@
       font-weight: 700;
     }
 
+    .positioning-grid-line {
+      stroke: #fff;
+      stroke-width: 1;
+      opacity: 1;
+    }
+
+    .positioning-tick-label {
+      fill: var(--muted-text);
+      font-size: 12px;
+      font-weight: 400;
+      opacity: 0.76;
+    }
+
+    .quadrant-axis {
+      stroke: var(--lg-dark-blue);
+      stroke-linecap: round;
+      stroke-width: 2.25;
+      opacity: 0.72;
+    }
+
+    .quadrant-axis-label {
+      fill: var(--lg-dark-blue);
+      font-size: 17px;
+      font-weight: 700;
+    }
+
+    .quadrant-label {
+      fill: var(--lg-dark-blue);
+      font-size: 15px;
+      font-weight: 700;
+      opacity: 0.24;
+      pointer-events: none;
+    }
+
+    .quadrant-label-subtle {
+      opacity: 0.16;
+    }
+
     .tick-label,
     .reference-label {
       fill: var(--muted-text);
@@ -1017,9 +1055,9 @@
     function renderPositioningChart() {
       const svg = document.getElementById("positioning-chart");
       const width = 1200;
-      const height = 725;
+      const height = 737;
       const margin = {
-        top: 146,
+        top: 158,
         right: 140,
         bottom: 62,
         left: 176
@@ -1053,6 +1091,23 @@
       );
       svg.append(title, desc);
 
+      const defs = createSvgElement("defs");
+      const arrowMarker = createSvgElement("marker", {
+        id: "positioning-axis-arrow",
+        markerWidth: 9,
+        markerHeight: 9,
+        refX: 8,
+        refY: 4.5,
+        orient: "auto-start-reverse",
+        markerUnits: "strokeWidth"
+      });
+      arrowMarker.appendChild(createSvgElement("path", {
+        d: "M 0 0 L 9 4.5 L 0 9 z",
+        fill: "#20304f"
+      }));
+      defs.appendChild(arrowMarker);
+      svg.appendChild(defs);
+
       const xAxisScale = (value) => plot.x + (value / 16) * plot.width;
       const yAxisScale = (value) => plot.y + plot.height - (value / 100) * plot.height;
       const xScale = (value) => drawablePlot.x + (value / 16) * drawablePlot.width;
@@ -1078,18 +1133,22 @@
       }, "2026"));
 
       const gridGroup = createSvgElement("g", { "aria-hidden": "true" });
+      const thresholdX = xAxisScale(8);
+      const thresholdY = yAxisScale(50);
 
       for (let x = 0; x <= 16; x += 2) {
         const px = xAxisScale(x);
-        gridGroup.appendChild(createSvgElement("line", {
-          class: "grid-line",
-          x1: px,
-          y1: plot.y,
-          x2: px,
-          y2: plot.y + plot.height
-        }));
+        if (x !== 8) {
+          gridGroup.appendChild(createSvgElement("line", {
+            class: "positioning-grid-line",
+            x1: px,
+            y1: plot.y,
+            x2: px,
+            y2: plot.y + plot.height
+          }));
+        }
         gridGroup.appendChild(createSvgElement("text", {
-          class: "tick-label",
+          class: "positioning-tick-label",
           x: px,
           y: plot.y + plot.height + 30,
           "text-anchor": "middle"
@@ -1098,84 +1157,96 @@
 
       for (let y = 0; y <= 100; y += 25) {
         const py = yAxisScale(y);
-        gridGroup.appendChild(createSvgElement("line", {
-          class: "grid-line",
-          x1: plot.x,
-          y1: py,
-          x2: plot.x + plot.width,
-          y2: py
-        }));
-        gridGroup.appendChild(createSvgElement("text", {
-          class: "tick-label",
-          x: plot.x - 18,
-          y: py + 5,
-          "text-anchor": "end"
-        }, `${Math.round(y)}%`));
+        if (y !== 50) {
+          gridGroup.appendChild(createSvgElement("line", {
+            class: "positioning-grid-line",
+            x1: plot.x,
+            y1: py,
+            x2: plot.x + plot.width,
+            y2: py
+          }));
+        }
+        if (y !== 50) {
+          gridGroup.appendChild(createSvgElement("text", {
+            class: "positioning-tick-label",
+            x: plot.x - 18,
+            y: py + 5,
+            "text-anchor": "end"
+          }, `${Math.round(y)}%`));
+        }
       }
 
       svg.appendChild(gridGroup);
 
       svg.appendChild(createSvgElement("line", {
-        class: "axis-line",
-        x1: plot.x,
-        y1: plot.y + plot.height,
-        x2: plot.x + plot.width,
-        y2: plot.y + plot.height
-      }));
-      svg.appendChild(createSvgElement("line", {
-        class: "axis-line",
-        x1: plot.x,
-        y1: plot.y,
-        x2: plot.x,
-        y2: plot.y + plot.height
-      }));
-
-      const thresholdX = xAxisScale(8);
-      const thresholdY = yAxisScale(50);
-      svg.appendChild(createSvgElement("line", {
-        class: "reference-line",
-        x1: thresholdX,
-        y1: plot.y,
-        x2: thresholdX,
-        y2: plot.y + plot.height
-      }));
-      svg.appendChild(createSvgElement("line", {
-        class: "reference-line",
+        class: "quadrant-axis",
         x1: plot.x,
         y1: thresholdY,
         x2: plot.x + plot.width,
-        y2: thresholdY
+        y2: thresholdY,
+        "marker-start": "url(#positioning-axis-arrow)",
+        "marker-end": "url(#positioning-axis-arrow)"
+      }));
+      svg.appendChild(createSvgElement("line", {
+        class: "quadrant-axis",
+        x1: thresholdX,
+        y1: plot.y,
+        x2: thresholdX,
+        y2: plot.y + plot.height,
+        "marker-start": "url(#positioning-axis-arrow)",
+        "marker-end": "url(#positioning-axis-arrow)"
       }));
       svg.appendChild(createSvgElement("text", {
-        class: "axis-label",
-        x: plot.x - 132,
+        class: "quadrant-axis-label",
+        x: plot.x - 92,
         y: plot.y + plot.height / 2,
         "text-anchor": "middle"
       }, "RMG Simplicity"));
       svg.appendChild(createSvgElement("text", {
-        class: "axis-label",
+        class: "quadrant-axis-label",
         x: plot.x + plot.width + 70,
         y: plot.y + plot.height / 2,
         "text-anchor": "middle"
       }, "Liveops"));
       svg.appendChild(createSvgElement("text", {
-        class: "x-helper-label",
-        x: plot.x,
-        y: plot.y + plot.height + 64,
-        "text-anchor": "start"
-      }, "live features count"));
-      svg.appendChild(createSvgElement("text", {
-        class: "axis-label-small",
+        class: "quadrant-axis-label",
         x: plot.x + plot.width / 2,
-        y: plot.y - 20,
+        y: plot.y - 24,
         "text-anchor": "middle"
       }, "NA/Branded"));
       svg.appendChild(createSvgElement("text", {
-        class: "axis-label-small",
+        class: "quadrant-axis-label",
         x: plot.x + plot.width / 2,
         y: plot.y + plot.height + 54,
         "text-anchor": "middle"
       }, "EU/Other"));
+
+      const quadrantLabelOffsetX = 54;
+      const quadrantLabelOffsetY = 50;
+      svg.appendChild(createSvgElement("text", {
+        class: "quadrant-label",
+        x: plot.x + quadrantLabelOffsetX,
+        y: plot.y + quadrantLabelOffsetY,
+        "text-anchor": "start"
+      }, "Branded but Simple"));
+      svg.appendChild(createSvgElement("text", {
+        class: "quadrant-label",
+        x: thresholdX + quadrantLabelOffsetX,
+        y: plot.y + quadrantLabelOffsetY,
+        "text-anchor": "start"
+      }, "Branded + Feature Rich"));
+      svg.appendChild(createSvgElement("text", {
+        class: "quadrant-label",
+        x: plot.x + quadrantLabelOffsetX,
+        y: thresholdY + quadrantLabelOffsetY,
+        "text-anchor": "start"
+      }, "Provider-Led + Simple"));
+      svg.appendChild(createSvgElement("text", {
+        class: "quadrant-label quadrant-label-subtle",
+        x: thresholdX + quadrantLabelOffsetX,
+        y: thresholdY + quadrantLabelOffsetY,
+        "text-anchor": "start"
+      }, "Provider-Led + Feature Rich"));
 
       const bubblesGroup = createSvgElement("g");
       const annotationsGroup = createSvgElement("g");
