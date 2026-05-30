@@ -481,6 +481,27 @@
       border-bottom: 0;
     }
 
+    .feature-status-cell,
+    .feature-platform-header {
+      text-align: center;
+    }
+
+    .feature-status {
+      color: var(--lg-dark-blue);
+      font-weight: 800;
+    }
+
+    .feature-status.is-absent {
+      color: var(--muted-text);
+      font-weight: 700;
+    }
+
+    .feature-count-row td {
+      background: #f7f9fc;
+      color: var(--lg-dark-blue);
+      font-weight: 800;
+    }
+
     .numeric {
       text-align: right;
     }
@@ -649,9 +670,10 @@
         <h1>VGW Social Casino Positioning Research</h1>
       </div>
       <nav class="tabs" role="tablist" aria-label="Dashboard sections">
-        <button class="tab-button" id="tab-positioning" type="button" role="tab" aria-selected="true" aria-controls="panel-positioning" data-tab="positioning">2026 Positioning</button>
+        <button class="tab-button" id="tab-positioning" type="button" role="tab" aria-selected="true" aria-controls="panel-positioning" data-tab="positioning">Positioning</button>
         <button class="tab-button" id="tab-revenue" type="button" role="tab" aria-selected="false" aria-controls="panel-revenue" data-tab="revenue">Revenue</button>
         <button class="tab-button" id="tab-content" type="button" role="tab" aria-selected="false" aria-controls="panel-content" data-tab="content">Content</button>
+        <button class="tab-button" id="tab-feature-matrix" type="button" role="tab" aria-selected="false" aria-controls="panel-feature-matrix" data-tab="feature-matrix">Feature Matrix</button>
         <button class="tab-button" id="tab-sources" type="button" role="tab" aria-selected="false" aria-controls="panel-sources" data-tab="sources">Information</button>
       </nav>
     </div>
@@ -661,6 +683,13 @@
     <div class="page-shell">
       <section class="tab-panel is-active" id="panel-positioning" role="tabpanel" aria-labelledby="tab-positioning">
         <div class="chart-card">
+          <div class="revenue-header">
+            <div class="pill-group" role="group" aria-label="Positioning year selector">
+              <button class="platform-pill" type="button" aria-pressed="false" data-positioning-year="2022">2022 Historical</button>
+              <button class="platform-pill is-active" type="button" aria-pressed="true" data-positioning-year="2026">2026 Current</button>
+              <button class="platform-pill" type="button" aria-pressed="false" data-positioning-year="2028">2028 Projection</button>
+            </div>
+          </div>
           <div class="chart-wrap">
             <svg id="positioning-chart" role="img" aria-describedby="positioning-chart-desc"></svg>
           </div>
@@ -674,7 +703,7 @@
               <button class="platform-pill is-active" type="button" aria-pressed="true" data-revenue-selection="All">All</button>
               <button class="platform-pill" type="button" aria-pressed="false" data-revenue-selection="VGW">VGW</button>
               <button class="platform-pill" type="button" aria-pressed="false" data-revenue-selection="Crown Coins">Crown Coins</button>
-              <button class="platform-pill" type="button" aria-pressed="false" data-revenue-selection="McLuck">McLuck</button>
+              <button class="platform-pill" type="button" aria-pressed="false" data-revenue-selection="Patrianna">Patrianna</button>
               <button class="platform-pill" type="button" aria-pressed="false" data-revenue-selection="Modo">Modo</button>
               <button class="platform-pill" type="button" aria-pressed="false" data-revenue-selection="Pulsz">Pulsz</button>
               <button class="platform-pill" type="button" aria-pressed="false" data-revenue-selection="Stake.us">Stake.us</button>
@@ -684,15 +713,22 @@
           <div class="revenue-chart-wrap">
             <svg id="revenue-chart" role="img" aria-labelledby="revenue-chart-title revenue-chart-desc"></svg>
           </div>
-          <p class="chart-footnote" id="revenue-footnote">Values shown in $M gross purchases / revenue estimate. Stacked view combines all tracked platforms. VGW represents VGW/Chumba for this view.</p>
+          <p class="chart-footnote" id="revenue-footnote">Revenue values are $M gross purchases / revenue estimates. VGW and Patrianna are operator-level estimates across multiple brands; Chumba and McLuck are used as product-level anchors in positioning/content views where applicable.</p>
         </div>
       </section>
 
       <section class="tab-panel" id="panel-content" role="tabpanel" aria-labelledby="tab-content" hidden>
+        <div class="revenue-header">
+          <div class="pill-group" role="group" aria-label="Content year selector">
+            <button class="platform-pill" type="button" aria-pressed="false" data-content-year="2022">2022 Historical</button>
+            <button class="platform-pill is-active" type="button" aria-pressed="true" data-content-year="2026">2026 Current</button>
+            <button class="platform-pill" type="button" aria-pressed="false" data-content-year="2028">2028 Projection</button>
+          </div>
+        </div>
         <div class="table-card">
           <div class="table-card-header">
             <h2>Raw Content Counts</h2>
-            <p>Counts reflect consumer-visible catalog/provider data used for the 2026 positioning view. Game count includes slots games only.</p>
+            <p id="content-counts-description">Counts reflect consumer-visible catalog/provider data for the 2026 current view. Game count is supplemental context and is not used for positioning.</p>
           </div>
           <div class="table-scroll">
             <table>
@@ -731,13 +767,35 @@
         </div>
       </section>
 
+      <section class="tab-panel" id="panel-feature-matrix" role="tabpanel" aria-labelledby="tab-feature-matrix" hidden>
+        <div class="revenue-header">
+          <div class="pill-group" role="group" aria-label="Feature Matrix year selector">
+            <button class="platform-pill" type="button" aria-pressed="false" data-feature-matrix-year="2022">2022 Historical</button>
+            <button class="platform-pill is-active" type="button" aria-pressed="true" data-feature-matrix-year="2026">2026 Current</button>
+            <button class="platform-pill" type="button" aria-pressed="false" data-feature-matrix-year="2028">2028 Projection</button>
+          </div>
+        </div>
+        <div class="table-card">
+          <div class="table-card-header">
+            <h2>Feature Matrix</h2>
+            <p>Consumer-visible feature presence by platform. Feature counts are binary and do not measure depth, quality, sophistication, or business impact.</p>
+          </div>
+          <div class="table-scroll">
+            <table>
+              <thead id="feature-matrix-head"></thead>
+              <tbody id="feature-matrix-table"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
       <section class="tab-panel" id="panel-sources" role="tabpanel" aria-labelledby="tab-sources" hidden>
         <div class="appendix-card">
           <h2>Comments</h2>
           <ul>
             <li>The dashboard is based on the working <a href="https://docs.google.com/spreadsheets/d/18Yhj6Xi_JoOlAtSK5-kVxT0loXGwpSbNAN1b5uuaEQE/edit?gid=0#gid=0" class="source-link" target="_blank" rel="noopener">Research Spreadsheet</a>, which contains the platform observations, provider counts, feature notes, and source-level verification used during the project.</li>
             <li>Revenue values are directional estimates in $M gross purchases / revenue estimate. Revenue data came from the EKG market sizing/reporting work.</li>
-            <li>VGW revenue is shown as VGW/Chumba in the dashboard view because the client understands the internal brand relationship.</li>
+            <li>VGW and Patrianna revenue values are operator-level estimates across multiple brands; Chumba and McLuck are used as product-level anchors in positioning/content views where applicable.</li>
             <li>Feature counts are binary and consumer-visible; they do not measure feature depth, quality, or business impact.</li>
             <li>Provider and content counts were gathered from each platform's provider page and/or manual counting of games on the platform site.</li>
             <li>Modo required additional manual verification because public third-party references varied materially. The dashboard uses the manual catalog count from the research process.</li>
@@ -857,125 +915,466 @@
   <div class="dashboard-tooltip" id="dashboard-tooltip" role="tooltip" aria-hidden="true"></div>
 
   <script>
-    const positioningData = [
-      {
-        platform: "VGW/Chumba",
-        shortLabel: "VGW / Chumba",
-        xFeatureCount: 7,
-        naBrandedPct: 27,
-        euOtherPct: 73,
-        revenue2026: 3885,
-        color: "#20304f",
-        labelDx: -56,
-        labelDy: -58,
-        labelAnchor: "end",
-        note: "Revenue bubble uses VGW/Chumba 2026E gross purchases."
+    const positioningYearConfig = {
+      2022: {
+        label: "2022 Historical",
+        subtitle: "2022 Historical Reconstruction"
       },
-      {
-        platform: "Crown Coins",
-        shortLabel: "Crown",
-        xFeatureCount: 15,
-        naBrandedPct: 7,
-        euOtherPct: 93,
-        revenue2026: 3000,
-        color: "#2281e0",
-        displayDx: -18,
-        displayDy: 10,
-        labelDx: 72,
-        labelDy: 44,
-        labelAnchor: "start"
+      2026: {
+        label: "2026 Current",
+        subtitle: "2026 Current State"
       },
-      {
-        platform: "McLuck",
-        shortLabel: "McLuck",
-        xFeatureCount: 14,
-        naBrandedPct: 0,
-        euOtherPct: 100,
-        revenue2026: 2500,
-        color: "#fbbc04",
-        labelDx: -60,
-        labelDy: 42,
-        labelAnchor: "end"
-      },
-      {
-        platform: "Modo",
-        shortLabel: "Modo",
-        xFeatureCount: 15,
-        naBrandedPct: 9,
-        euOtherPct: 91,
-        revenue2026: 1000,
-        color: "#f3771b",
-        displayDx: 18,
-        displayDy: -10,
-        labelDx: 40,
-        labelDy: -36,
-        labelAnchor: "start"
-      },
-      {
-        platform: "Pulsz",
-        shortLabel: "Pulsz",
-        xFeatureCount: 12,
-        naBrandedPct: 0,
-        euOtherPct: 100,
-        revenue2026: 1200,
-        color: "#46bdc6",
-        labelDx: -36,
-        labelDy: -38,
-        labelAnchor: "end"
-      },
-      {
-        platform: "Stake.us",
-        shortLabel: "Stake",
-        xFeatureCount: 14,
-        naBrandedPct: 88,
-        euOtherPct: 12,
-        revenue2026: 2500,
-        color: "#78b6ff",
-        labelDx: 46,
-        labelDy: -36,
-        labelAnchor: "start"
+      2028: {
+        label: "2028 Projection",
+        subtitle: "2028 Roadmap Execution Case"
       }
-    ];
+    };
 
+    const positioningDataByYear = {
+      2022: [
+        {
+          platform: "Chumba Casino",
+          shortLabel: "VGW / Chumba",
+          productAnchor: "Chumba Casino",
+          revenueEntity: "VGW",
+          xFeatureCount: 4,
+          naBrandedPct: 0,
+          euOtherPct: 100,
+          revenueEstimate: 2867,
+          color: "#20304f",
+          labelDx: 58,
+          labelDy: -50,
+          labelAnchor: "start",
+          note: "Historical reconstruction. Product placement anchored on Chumba; bubble size uses VGW operator-level estimate. Provider-region share reflects workbook classification."
+        },
+        {
+          platform: "Pulsz",
+          shortLabel: "Pulsz",
+          productAnchor: "Pulsz",
+          revenueEntity: "Pulsz",
+          xFeatureCount: 9,
+          naBrandedPct: 8,
+          euOtherPct: 92,
+          revenueEstimate: 368,
+          color: "#46bdc6",
+          labelDx: 44,
+          labelDy: 38,
+          labelAnchor: "start",
+          note: "Historical reconstruction using minimum publicly verified content and feature evidence."
+        },
+        {
+          platform: "Stake.us",
+          shortLabel: "Stake",
+          productAnchor: "Stake.us",
+          revenueEntity: "Stake.us",
+          xFeatureCount: 7,
+          naBrandedPct: 33,
+          euOtherPct: 67,
+          revenueEstimate: 150,
+          color: "#78b6ff",
+          labelDx: 38,
+          labelDy: -34,
+          labelAnchor: "start",
+          note: "Historical reconstruction using minimum publicly verified content and feature evidence."
+        }
+      ],
+      2026: [
+        {
+          platform: "Chumba Casino",
+          shortLabel: "VGW / Chumba",
+          productAnchor: "Chumba Casino",
+          revenueEntity: "VGW",
+          xFeatureCount: 7,
+          naBrandedPct: 27,
+          euOtherPct: 73,
+          revenueEstimate: 3885,
+          color: "#20304f",
+          labelDx: -56,
+          labelDy: -58,
+          labelAnchor: "end",
+          note: "Product placement anchored on Chumba; bubble size uses VGW operator-level estimate."
+        },
+        {
+          platform: "Crown Coins",
+          shortLabel: "Crown Coins",
+          productAnchor: "Crown Coins",
+          revenueEntity: "Crown Coins",
+          xFeatureCount: 15,
+          naBrandedPct: 7,
+          euOtherPct: 93,
+          revenueEstimate: 3000,
+          color: "#2281e0",
+          displayDx: -18,
+          displayDy: 10,
+          labelDx: 72,
+          labelDy: 44,
+          labelAnchor: "start",
+          note: "Current-state positioning."
+        },
+        {
+          platform: "McLuck",
+          shortLabel: "Patrianna",
+          productAnchor: "McLuck",
+          revenueEntity: "Patrianna",
+          xFeatureCount: 14,
+          naBrandedPct: 0,
+          euOtherPct: 100,
+          revenueEstimate: 2500,
+          color: "#fbbc04",
+          labelDx: -60,
+          labelDy: 42,
+          labelAnchor: "end",
+          note: "Product placement anchored on McLuck; bubble size uses Patrianna operator-level estimate."
+        },
+        {
+          platform: "Modo",
+          shortLabel: "Modo",
+          productAnchor: "Modo",
+          revenueEntity: "Modo",
+          xFeatureCount: 15,
+          naBrandedPct: 9,
+          euOtherPct: 91,
+          revenueEstimate: 1000,
+          color: "#f3771b",
+          displayDx: 18,
+          displayDy: -10,
+          labelDx: 40,
+          labelDy: -36,
+          labelAnchor: "start",
+          note: "Current-state positioning."
+        },
+        {
+          platform: "Pulsz",
+          shortLabel: "Pulsz",
+          productAnchor: "Pulsz",
+          revenueEntity: "Pulsz",
+          xFeatureCount: 12,
+          naBrandedPct: 0,
+          euOtherPct: 100,
+          revenueEstimate: 1200,
+          color: "#46bdc6",
+          labelDx: -36,
+          labelDy: -38,
+          labelAnchor: "end",
+          note: "Current-state positioning."
+        },
+        {
+          platform: "Stake.us",
+          shortLabel: "Stake",
+          productAnchor: "Stake.us",
+          revenueEntity: "Stake.us",
+          xFeatureCount: 14,
+          naBrandedPct: 88,
+          euOtherPct: 12,
+          revenueEstimate: 2500,
+          color: "#78b6ff",
+          labelDx: 46,
+          labelDy: -36,
+          labelAnchor: "start",
+          note: "Current-state positioning."
+        }
+      ],
+      2028: [
+        {
+          platform: "Chumba Casino",
+          shortLabel: "VGW / Chumba",
+          productAnchor: "Chumba Casino",
+          revenueEntity: "VGW",
+          xFeatureCount: 15,
+          naBrandedPct: 52,
+          euOtherPct: 48,
+          revenueEstimate: 4250,
+          color: "#20304f",
+          displayDx: -18,
+          labelDx: -62,
+          labelDy: -46,
+          labelAnchor: "end",
+          note: "2028 Roadmap Execution Case. Product placement anchored on Chumba; bubble size uses VGW/Chumba projection value from the workbook."
+        },
+        {
+          platform: "Crown Coins",
+          shortLabel: "Crown Coins",
+          productAnchor: "Crown Coins",
+          revenueEntity: "Crown Coins",
+          xFeatureCount: 15,
+          naBrandedPct: 9,
+          euOtherPct: 91,
+          revenueEstimate: 4200,
+          color: "#2281e0",
+          displayDx: -38,
+          displayDy: 8,
+          labelDx: -54,
+          labelDy: 48,
+          labelAnchor: "end",
+          note: "2028 Roadmap Execution Case projection."
+        },
+        {
+          platform: "McLuck",
+          shortLabel: "Patrianna",
+          productAnchor: "McLuck",
+          revenueEntity: "Patrianna",
+          xFeatureCount: 15,
+          naBrandedPct: 0,
+          euOtherPct: 100,
+          revenueEstimate: 2600,
+          color: "#fbbc04",
+          displayDx: -10,
+          displayDy: 18,
+          labelDx: -54,
+          labelDy: 52,
+          labelAnchor: "end",
+          note: "2028 Roadmap Execution Case. Product placement anchored on McLuck; bubble size uses Patrianna/McLuck projection value from the workbook."
+        },
+        {
+          platform: "Modo",
+          shortLabel: "Modo",
+          productAnchor: "Modo",
+          revenueEntity: "Modo",
+          xFeatureCount: 15,
+          naBrandedPct: 11,
+          euOtherPct: 89,
+          revenueEstimate: 1500,
+          color: "#f3771b",
+          displayDx: 30,
+          displayDy: -10,
+          labelDx: 48,
+          labelDy: -36,
+          labelAnchor: "start",
+          note: "2028 Roadmap Execution Case projection."
+        },
+        {
+          platform: "Pulsz",
+          shortLabel: "Pulsz",
+          productAnchor: "Pulsz",
+          revenueEntity: "Pulsz",
+          xFeatureCount: 14,
+          naBrandedPct: 0,
+          euOtherPct: 100,
+          revenueEstimate: 1150,
+          color: "#46bdc6",
+          displayDx: -4,
+          displayDy: -8,
+          labelDx: -48,
+          labelDy: -34,
+          labelAnchor: "end",
+          note: "2028 Roadmap Execution Case projection."
+        },
+        {
+          platform: "Stake.us",
+          shortLabel: "Stake",
+          productAnchor: "Stake.us",
+          revenueEntity: "Stake.us",
+          xFeatureCount: 14,
+          naBrandedPct: 90,
+          euOtherPct: 10,
+          revenueEstimate: 3000,
+          color: "#78b6ff",
+          labelDx: 46,
+          labelDy: -36,
+          labelAnchor: "start",
+          note: "2028 Roadmap Execution Case projection. Stake content growth uses the Stake Engine / Only on Stake ecosystem treatment."
+        }
+      ]
+    };
+
+    let activePositioningYear = "2026";
+
+    const revenueEntityMetadata = {
+      VGW: {
+        displayLabel: "VGW",
+        color: "#20304f",
+        operationalPlatform: "Chumba",
+        note: "Chumba Casino positioning uses VGW operator-level bubble size."
+      },
+      "Crown Coins": {
+        displayLabel: "Crown Coins",
+        color: "#2281e0",
+        operationalPlatform: "Crown Coins",
+        note: "Direct platform label unless source data changes."
+      },
+      Patrianna: {
+        displayLabel: "Patrianna",
+        color: "#fbbc04",
+        operationalPlatform: "McLuck",
+        note: "Product placement anchored on McLuck; bubble size uses Patrianna operator-level estimate."
+      },
+      Modo: {
+        displayLabel: "Modo",
+        color: "#f3771b",
+        operationalPlatform: "Modo",
+        note: "Direct platform label unless source data changes."
+      },
+      Pulsz: {
+        displayLabel: "Pulsz",
+        color: "#46bdc6",
+        operationalPlatform: "Pulsz",
+        note: "Direct platform label unless source data changes."
+      },
+      "Stake.us": {
+        displayLabel: "Stake.us",
+        color: "#78b6ff",
+        operationalPlatform: "Stake.us",
+        note: "Direct platform label unless source data changes."
+      }
+    };
+
+    // Revenue values may be updated when the next EKG report arrives.
     const revenueData = [
-      { year: "2019", VGW: 450, "Crown Coins": 0, McLuck: 0, Modo: 0, Pulsz: 0, "Stake.us": 0 },
-      { year: "2020", VGW: 1220, "Crown Coins": 0, McLuck: 0, Modo: 0, Pulsz: 10, "Stake.us": 0 },
-      { year: "2021", VGW: 2100, "Crown Coins": 0, McLuck: 0, Modo: 0, Pulsz: 70, "Stake.us": 0 },
-      { year: "2022", VGW: 2867, "Crown Coins": 0, McLuck: 25, Modo: 0, Pulsz: 368, "Stake.us": 150 },
-      { year: "2023", VGW: 3604, "Crown Coins": 0, McLuck: 500, Modo: 13, Pulsz: 632, "Stake.us": 600 },
-      { year: "2024", VGW: 4570, "Crown Coins": 200, McLuck: 1750, Modo: 380, Pulsz: 1000, "Stake.us": 1300 },
-      { year: "2025E", VGW: 3885, "Crown Coins": 1000, McLuck: 1900, Modo: 900, Pulsz: 1200, "Stake.us": 1400 },
-      { year: "2026E", VGW: 3885, "Crown Coins": 3000, McLuck: 2500, Modo: 1000, Pulsz: 1200, "Stake.us": 2500 }
+      { year: "2019", VGW: 450, "Crown Coins": 0, Patrianna: 0, Modo: 0, Pulsz: 0, "Stake.us": 0 },
+      { year: "2020", VGW: 1220, "Crown Coins": 0, Patrianna: 0, Modo: 0, Pulsz: 10, "Stake.us": 0 },
+      { year: "2021", VGW: 2100, "Crown Coins": 0, Patrianna: 0, Modo: 0, Pulsz: 70, "Stake.us": 0 },
+      { year: "2022", VGW: 2867, "Crown Coins": 0, Patrianna: 25, Modo: 0, Pulsz: 368, "Stake.us": 150 },
+      { year: "2023", VGW: 3604, "Crown Coins": 0, Patrianna: 500, Modo: 13, Pulsz: 632, "Stake.us": 600 },
+      { year: "2024", VGW: 4570, "Crown Coins": 200, Patrianna: 1750, Modo: 380, Pulsz: 1000, "Stake.us": 1300 },
+      { year: "2025E", VGW: 3885, "Crown Coins": 1000, Patrianna: 1900, Modo: 900, Pulsz: 1200, "Stake.us": 1400 },
+      { year: "2026E", VGW: 3885, "Crown Coins": 3000, Patrianna: 2500, Modo: 1000, Pulsz: 1200, "Stake.us": 2500 }
     ];
 
-    const revenuePlatforms = ["VGW", "Crown Coins", "McLuck", "Modo", "Pulsz", "Stake.us"];
+    const revenuePlatforms = ["VGW", "Crown Coins", "Patrianna", "Modo", "Pulsz", "Stake.us"];
     const platformColors = {
       VGW: "#20304f",
       Chumba: "#20304f",
       "Crown Coins": "#2281e0",
+      Patrianna: "#fbbc04",
       McLuck: "#fbbc04",
       Modo: "#f3771b",
       Pulsz: "#46bdc6",
-      "Stake.us": "#78b6ff"
+      "Stake.us": "#78b6ff",
+      Cider: "#8a94a6"
     };
 
-    const contentCountsData = [
-      { platform: "Chumba", providerCount: 15, gameCount: 273 },
-      { platform: "Crown Coins", providerCount: 27, gameCount: 1015 },
-      { platform: "McLuck", providerCount: 48, gameCount: 1782 },
-      { platform: "Modo", providerCount: 46, gameCount: 1584 },
-      { platform: "Pulsz", providerCount: 37, gameCount: 402 },
-      { platform: "Stake.us", providerCount: 319, gameCount: 1255 }
+    const contentYearConfig = {
+      2022: {
+        label: "2022 Historical",
+        description: "Counts reflect historical content evidence for the 2022 view. Game count is supplemental context and is not used for positioning."
+      },
+      2026: {
+        label: "2026 Current",
+        description: "Counts reflect consumer-visible catalog/provider data for the 2026 current view. Game count is supplemental context and is not used for positioning."
+      },
+      2028: {
+        label: "2028 Projection",
+        description: "Counts reflect projected content scale for the 2028 view. Game count is supplemental context and is not used for positioning."
+      }
+    };
+
+    const contentCountsByYear = {
+      2022: [
+        { platform: "Chumba", providerCount: 1, gameCount: 100 },
+        { platform: "Crown Coins", providerCount: 0, gameCount: 0 },
+        { platform: "McLuck", providerCount: 0, gameCount: 0 },
+        { platform: "Modo", providerCount: 0, gameCount: 0 },
+        { platform: "Pulsz", providerCount: 13, gameCount: 300 },
+        { platform: "Stake.us", providerCount: 3, gameCount: 291 }
+      ],
+      2026: [
+        { platform: "Chumba", providerCount: 15, gameCount: 273 },
+        { platform: "Crown Coins", providerCount: 27, gameCount: 1015 },
+        { platform: "McLuck", providerCount: 48, gameCount: 1782 },
+        { platform: "Modo", providerCount: 46, gameCount: 1584 },
+        { platform: "Pulsz", providerCount: 37, gameCount: 402 },
+        { platform: "Stake.us", providerCount: 319, gameCount: 1255 },
+        { platform: "Cider", providerCount: 9, gameCount: 457 }
+      ],
+      2028: [
+        { platform: "Chumba", providerCount: 25, gameCount: 600 },
+        { platform: "Crown Coins", providerCount: 32, gameCount: 1250 },
+        { platform: "McLuck", providerCount: 55, gameCount: 2050 },
+        { platform: "Modo", providerCount: 55, gameCount: 1900 },
+        { platform: "Pulsz", providerCount: 42, gameCount: 475 },
+        { platform: "Stake.us", providerCount: 600, gameCount: 2100 }
+      ]
+    };
+
+    const providerRegionMixByYear = {
+      2022: [
+        { platform: "Chumba", naBrandedProviders: 0, euOtherProviders: 1, naBrandedPct: 0, euOtherPct: 100 },
+        { platform: "Crown Coins", naBrandedProviders: 0, euOtherProviders: 0, naBrandedPct: null, euOtherPct: null },
+        { platform: "McLuck", naBrandedProviders: 0, euOtherProviders: 0, naBrandedPct: null, euOtherPct: null },
+        { platform: "Modo", naBrandedProviders: 0, euOtherProviders: 0, naBrandedPct: null, euOtherPct: null },
+        { platform: "Pulsz", naBrandedProviders: 1, euOtherProviders: 12, naBrandedPct: 8, euOtherPct: 92 },
+        { platform: "Stake.us", naBrandedProviders: 1, euOtherProviders: 2, naBrandedPct: 33, euOtherPct: 67 }
+      ],
+      2026: [
+        { platform: "Chumba", naBrandedProviders: 4, euOtherProviders: 11, naBrandedPct: 27, euOtherPct: 73 },
+        { platform: "Crown Coins", naBrandedProviders: 2, euOtherProviders: 25, naBrandedPct: 7, euOtherPct: 93 },
+        { platform: "McLuck", naBrandedProviders: 0, euOtherProviders: 48, naBrandedPct: 0, euOtherPct: 100 },
+        { platform: "Modo", naBrandedProviders: 4, euOtherProviders: 42, naBrandedPct: 9, euOtherPct: 91 },
+        { platform: "Pulsz", naBrandedProviders: 0, euOtherProviders: 37, naBrandedPct: 0, euOtherPct: 100 },
+        { platform: "Stake.us", naBrandedProviders: 281, euOtherProviders: 38, naBrandedPct: 88, euOtherPct: 12 },
+        { platform: "Cider", naBrandedProviders: 0, euOtherProviders: 9, naBrandedPct: 0, euOtherPct: 100 }
+      ],
+      2028: [
+        { platform: "Chumba", naBrandedProviders: 13, euOtherProviders: 12, naBrandedPct: 52, euOtherPct: 48 },
+        { platform: "Crown Coins", naBrandedProviders: 3, euOtherProviders: 29, naBrandedPct: 9, euOtherPct: 91 },
+        { platform: "McLuck", naBrandedProviders: 0, euOtherProviders: 55, naBrandedPct: 0, euOtherPct: 100 },
+        { platform: "Modo", naBrandedProviders: 6, euOtherProviders: 49, naBrandedPct: 11, euOtherPct: 89 },
+        { platform: "Pulsz", naBrandedProviders: 0, euOtherProviders: 42, naBrandedPct: 0, euOtherPct: 100 },
+        { platform: "Stake.us", naBrandedProviders: 540, euOtherProviders: 60, naBrandedPct: 90, euOtherPct: 10 }
+      ]
+    };
+
+    let activeContentYear = "2026";
+
+    const featureMatrixFeatures = [
+      "Purchase Funnel Optimization",
+      "VIP",
+      "Daily Login Bonus",
+      "Daily Missions",
+      "Coinback / Cashback",
+      "Referral Program",
+      "Tournament / Races",
+      "Live-Ops Platform",
+      "Mini-Games",
+      "Meta-Games / Progression",
+      "Birthday / Milestone Rewards",
+      "Daily Prize Drops",
+      "Progressive Jackpots",
+      "Live Dealer",
+      "Native iOS App"
     ];
 
-    const providerRegionMixData = [
-      { platform: "Chumba", naBrandedProviders: 4, euOtherProviders: 11, naBrandedPct: 27, euOtherPct: 73 },
-      { platform: "Crown Coins", naBrandedProviders: 2, euOtherProviders: 25, naBrandedPct: 7, euOtherPct: 93 },
-      { platform: "McLuck", naBrandedProviders: 0, euOtherProviders: 48, naBrandedPct: 0, euOtherPct: 100 },
-      { platform: "Modo", naBrandedProviders: 4, euOtherProviders: 42, naBrandedPct: 9, euOtherPct: 91 },
-      { platform: "Pulsz", naBrandedProviders: 0, euOtherProviders: 37, naBrandedPct: 0, euOtherPct: 100 },
-      { platform: "Stake.us", naBrandedProviders: 281, euOtherProviders: 38, naBrandedPct: 88, euOtherPct: 12 }
-    ];
+    const featureMatrixByYear = {
+      2022: {
+        platforms: ["Chumba", "Crown Coins", "McLuck", "Modo", "Pulsz", "Stake.us"],
+        counts: { Chumba: 4, "Crown Coins": 0, McLuck: 0, Modo: 0, Pulsz: 9, "Stake.us": 7 },
+        presence: {
+          Chumba: [true, false, true, false, false, false, false, true, false, false, false, false, true, false, false],
+          "Crown Coins": [false, false, false, false, false, false, false, false, false, false, false, false, false, false, false],
+          McLuck: [false, false, false, false, false, false, false, false, false, false, false, false, false, false, false],
+          Modo: [false, false, false, false, false, false, false, false, false, false, false, false, false, false, false],
+          Pulsz: [true, true, true, false, true, true, false, true, true, false, false, true, true, false, true],
+          "Stake.us": [false, true, true, false, true, false, true, true, true, false, false, false, false, true, false]
+        }
+      },
+      2026: {
+        platforms: ["Chumba", "Crown Coins", "McLuck", "Modo", "Pulsz", "Stake.us", "Cider"],
+        counts: { Chumba: 7, "Crown Coins": 15, McLuck: 14, Modo: 15, Pulsz: 12, "Stake.us": 14, Cider: 12 },
+        presence: {
+          Chumba: [false, false, true, true, false, false, true, true, true, false, false, true, false, true, false],
+          "Crown Coins": [true, true, true, true, true, true, true, true, true, true, true, true, true, true, true],
+          McLuck: [true, true, true, false, true, true, true, true, true, true, true, true, true, true, true],
+          Modo: [true, true, true, true, true, true, true, true, true, true, true, true, true, true, true],
+          Pulsz: [true, true, true, false, true, true, true, true, true, true, false, true, true, false, true],
+          "Stake.us": [false, true, true, true, true, true, true, true, true, true, true, true, true, true, true],
+          Cider: [true, true, true, true, true, true, true, true, true, false, false, true, true, false, true]
+        }
+      },
+      2028: {
+        platforms: ["Chumba", "Crown Coins", "McLuck", "Modo", "Pulsz", "Stake.us"],
+        counts: { Chumba: 15, "Crown Coins": 15, McLuck: 15, Modo: 15, Pulsz: 14, "Stake.us": 14 },
+        presence: {
+          Chumba: [true, true, true, true, true, true, true, true, true, true, true, true, true, true, true],
+          "Crown Coins": [true, true, true, true, true, true, true, true, true, true, true, true, true, true, true],
+          McLuck: [true, true, true, true, true, true, true, true, true, true, true, true, true, true, true],
+          Modo: [true, true, true, true, true, true, true, true, true, true, true, true, true, true, true],
+          Pulsz: [true, true, true, true, true, true, true, true, true, true, true, true, true, false, true],
+          "Stake.us": [false, true, true, true, true, true, true, true, true, true, true, true, true, true, true]
+        }
+      }
+    };
+
+    let activeFeatureMatrixYear = "2026";
 
     const svgNS = "http://www.w3.org/2000/svg";
 
@@ -1052,8 +1451,10 @@
       element.addEventListener("blur", hideTooltip);
     }
 
-    function renderPositioningChart() {
+    function renderPositioningChart(year = activePositioningYear) {
       const svg = document.getElementById("positioning-chart");
+      const selectedYearConfig = positioningYearConfig[year] || positioningYearConfig["2026"];
+      const positioningData = positioningDataByYear[year] || positioningDataByYear["2026"];
       const width = 1200;
       const height = 737;
       const margin = {
@@ -1068,8 +1469,8 @@
         width: width - margin.left - margin.right,
         height: height - margin.top - margin.bottom
       };
-      const maxRevenue = Math.max(...positioningData.map((item) => item.revenue2026));
-      const minRevenue = Math.min(...positioningData.map((item) => item.revenue2026));
+      const maxRevenue = Math.max(...positioningData.map((item) => item.revenueEstimate));
+      const minRevenue = Math.min(...positioningData.map((item) => item.revenueEstimate));
       const minRadius = 14;
       const maxRadius = 46;
       const bubblePadding = maxRadius + 10;
@@ -1087,7 +1488,7 @@
       const desc = createSvgElement(
         "desc",
         { id: "positioning-chart-desc" },
-        "Bubble positioning chart plotting raw feature count against NA/Branded percentage, with bubble area representing 2026 estimated revenue."
+        "Bubble positioning chart plotting feature count against NA/Branded percentage, with bubble area representing revenue or gross purchases estimate for the selected year."
       );
       svg.appendChild(desc);
 
@@ -1130,7 +1531,7 @@
         x: width / 2,
         y: 62,
         "text-anchor": "middle"
-      }, "2026"));
+      }, selectedYearConfig.subtitle));
 
       const gridGroup = createSvgElement("g", { "aria-hidden": "true" });
       const thresholdX = xAxisScale(8);
@@ -1254,19 +1655,22 @@
 
       positioningData
         .slice()
-        .sort((a, b) => b.revenue2026 - a.revenue2026)
+        .sort((a, b) => b.revenueEstimate - a.revenueEstimate)
         .forEach((item) => {
           const cx = xScale(item.xFeatureCount) + (item.displayDx || 0);
           const cy = yScale(item.naBrandedPct) + (item.displayDy || 0);
-          const radius = radiusScale(item.revenue2026);
+          const radius = radiusScale(item.revenueEstimate);
           const group = createSvgElement("g");
           const tooltipRows = [
             ["Platform", item.platform],
-            ["Live features count", String(item.xFeatureCount)],
+            ["Feature count", String(item.xFeatureCount)],
             ["NA/Branded", `${Math.round(item.naBrandedPct)}%`],
             ["EU/Other", `${Math.round(item.euOtherPct)}%`],
-            ["2026E revenue estimate", formatMoney(item.revenue2026)]
+            ["Revenue estimate", formatMoney(item.revenueEstimate)]
           ];
+          if (item.note) {
+            tooltipRows.push(["Note", item.note]);
+          }
           const ariaLabel = tooltipRows.map(([label, value]) => `${label}: ${value}`).join(". ");
           const circle = createSvgElement("circle", {
             class: "bubble",
@@ -1324,6 +1728,14 @@
       return `$${Math.round(value)}M`;
     }
 
+    function getRevenueDisplayLabel(entityKey) {
+      return revenueEntityMetadata[entityKey]?.displayLabel || entityKey;
+    }
+
+    function getRevenueColor(entityKey) {
+      return revenueEntityMetadata[entityKey]?.color || platformColors[entityKey];
+    }
+
     function getRevenueMax(selection) {
       const values = revenueData.map((yearData) => {
         if (selection === "All") {
@@ -1360,9 +1772,9 @@
 
         const swatch = document.createElement("span");
         swatch.className = "legend-swatch";
-        swatch.style.background = platformColors[platform];
+        swatch.style.background = getRevenueColor(platform);
 
-        item.append(swatch, document.createTextNode(platform));
+        item.append(swatch, document.createTextNode(getRevenueDisplayLabel(platform)));
         legend.appendChild(item);
       });
     }
@@ -1371,13 +1783,13 @@
       const footnote = document.getElementById("revenue-footnote");
 
       if (selection === "All") {
-        footnote.textContent = "Values shown in $M gross purchases / revenue estimate. Stacked view combines all tracked platforms. VGW represents VGW/Chumba for this view.";
+        footnote.textContent = "Revenue values are $M gross purchases / revenue estimates. VGW and Patrianna are operator-level estimates across multiple brands; Chumba and McLuck are used as product-level anchors in positioning/content views where applicable.";
         footnote.hidden = false;
         return;
       }
 
-      if (selection === "VGW") {
-        footnote.textContent = "Values shown in $M gross purchases / revenue estimate. VGW represents VGW/Chumba for this view.";
+      if (selection === "VGW" || selection === "Patrianna") {
+        footnote.textContent = "Revenue values are $M gross purchases / revenue estimates. VGW and Patrianna are operator-level estimates across multiple brands; Chumba and McLuck are used as product-level anchors in positioning/content views where applicable.";
         footnote.hidden = false;
         return;
       }
@@ -1482,14 +1894,14 @@
               y: yTop,
               width: barWidth,
               height: Math.max(1, yBottom - yTop),
-              fill: platformColors[platform],
+              fill: getRevenueColor(platform),
               tabindex: "0",
               role: "img",
-              "aria-label": `Year: ${yearData.year}. Platform: ${platform}. Revenue estimate: ${formatMoney(value)}. Total tracked revenue: ${formatMoney(annualTotal)}.`
+              "aria-label": `Year: ${yearData.year}. Platform: ${getRevenueDisplayLabel(platform)}. Revenue estimate: ${formatMoney(value)}. Total tracked revenue: ${formatMoney(annualTotal)}.`
             });
             const tooltipRows = [
               ["Year", yearData.year],
-              ["Platform", platform],
+              ["Platform", getRevenueDisplayLabel(platform)],
               ["Revenue estimate", formatMoney(value)],
               ["Total tracked revenue", formatMoney(annualTotal)]
             ];
@@ -1507,13 +1919,13 @@
             y: yTop,
             width: barWidth,
             height: value > 0 ? Math.max(1, plot.y + plot.height - yTop) : 0,
-            fill: platformColors[selection],
+            fill: getRevenueColor(selection),
             role: "img",
-            "aria-label": `Year: ${yearData.year}. Platform: ${selection}. Revenue estimate: ${formatMoney(value)}.`
+            "aria-label": `Year: ${yearData.year}. Platform: ${getRevenueDisplayLabel(selection)}. Revenue estimate: ${formatMoney(value)}.`
           });
           const tooltipRows = [
             ["Year", yearData.year],
-            ["Platform", selection],
+            ["Platform", getRevenueDisplayLabel(selection)],
             ["Revenue estimate", formatMoney(value)]
           ];
 
@@ -1535,6 +1947,16 @@
       svg.appendChild(barsGroup);
       renderRevenueLegend(selection);
       updateRevenueFootnote(selection);
+    }
+
+    function activatePositioningYear(year) {
+      activePositioningYear = positioningDataByYear[year] ? year : "2026";
+      document.querySelectorAll("[data-positioning-year]").forEach((button) => {
+        const isActive = button.dataset.positioningYear === activePositioningYear;
+        button.classList.toggle("is-active", isActive);
+        button.setAttribute("aria-pressed", String(isActive));
+      });
+      renderPositioningChart(activePositioningYear);
     }
 
     function activateRevenueSelection(selection) {
@@ -1563,9 +1985,13 @@
       return wrapper;
     }
 
-    function renderContentCountsTable() {
+    function renderContentCountsTable(year = activeContentYear) {
       const tbody = document.getElementById("content-counts-table");
+      const description = document.getElementById("content-counts-description");
+      const selectedYearConfig = contentYearConfig[year] || contentYearConfig["2026"];
+      const contentCountsData = contentCountsByYear[year] || contentCountsByYear["2026"];
       tbody.innerHTML = "";
+      description.textContent = selectedYearConfig.description;
 
       contentCountsData.forEach((item) => {
         const row = document.createElement("tr");
@@ -1585,8 +2011,9 @@
       });
     }
 
-    function renderProviderRegionMixTable() {
+    function renderProviderRegionMixTable(year = activeContentYear) {
       const tbody = document.getElementById("provider-region-mix-table");
+      const providerRegionMixData = providerRegionMixByYear[year] || providerRegionMixByYear["2026"];
       tbody.innerHTML = "";
 
       providerRegionMixData.forEach((item) => {
@@ -1597,33 +2024,122 @@
         const naPctCell = document.createElement("td");
         const otherPctCell = document.createElement("td");
         const mixCell = document.createElement("td");
-        const mixBar = document.createElement("div");
-        const naSegment = document.createElement("span");
-        const otherSegment = document.createElement("span");
 
         [naCountCell, otherCountCell, naPctCell, otherPctCell].forEach((cell) => {
           cell.className = "numeric";
         });
 
-        mixBar.className = "mix-bar";
-        mixBar.setAttribute("role", "img");
-        mixBar.setAttribute("aria-label", `${item.naBrandedPct}% NA/Branded, ${item.euOtherPct}% EU/Other`);
-        naSegment.className = "mix-segment-na";
-        otherSegment.className = "mix-segment-other";
-        naSegment.style.width = `${item.naBrandedPct}%`;
-        otherSegment.style.width = `${item.euOtherPct}%`;
-
         platformCell.appendChild(createPlatformCell(item.platform));
         naCountCell.textContent = formatNumber(item.naBrandedProviders);
         otherCountCell.textContent = formatNumber(item.euOtherProviders);
-        naPctCell.textContent = `${Math.round(item.naBrandedPct)}%`;
-        otherPctCell.textContent = `${Math.round(item.euOtherPct)}%`;
-        mixBar.append(naSegment, otherSegment);
-        mixCell.appendChild(mixBar);
+        if (item.naBrandedPct === null || item.euOtherPct === null) {
+          naPctCell.textContent = "—";
+          otherPctCell.textContent = "—";
+          mixCell.textContent = "—";
+        } else {
+          naPctCell.textContent = `${Math.round(item.naBrandedPct)}%`;
+          otherPctCell.textContent = `${Math.round(item.euOtherPct)}%`;
+          const mixBar = document.createElement("div");
+          const naSegment = document.createElement("span");
+          const otherSegment = document.createElement("span");
+          mixBar.className = "mix-bar";
+          mixBar.setAttribute("role", "img");
+          mixBar.setAttribute("aria-label", `${item.naBrandedPct}% NA/Branded, ${item.euOtherPct}% EU/Other`);
+          naSegment.className = "mix-segment-na";
+          otherSegment.className = "mix-segment-other";
+          naSegment.style.width = `${item.naBrandedPct}%`;
+          otherSegment.style.width = `${item.euOtherPct}%`;
+          mixBar.append(naSegment, otherSegment);
+          mixCell.appendChild(mixBar);
+        }
 
         row.append(platformCell, naCountCell, otherCountCell, naPctCell, otherPctCell, mixCell);
         tbody.appendChild(row);
       });
+    }
+
+    function activateContentYear(year) {
+      activeContentYear = contentCountsByYear[year] ? year : "2026";
+      document.querySelectorAll("[data-content-year]").forEach((button) => {
+        const isActive = button.dataset.contentYear === activeContentYear;
+        button.classList.toggle("is-active", isActive);
+        button.setAttribute("aria-pressed", String(isActive));
+      });
+      renderContentCountsTable(activeContentYear);
+      renderProviderRegionMixTable(activeContentYear);
+    }
+
+    function createFeatureStatusCell(isPresent) {
+      const cell = document.createElement("td");
+      const status = document.createElement("span");
+
+      cell.className = "feature-status-cell";
+      status.className = `feature-status${isPresent ? "" : " is-absent"}`;
+      status.textContent = isPresent ? "✓" : "—";
+      cell.appendChild(status);
+      return cell;
+    }
+
+    function renderFeatureMatrix(year = activeFeatureMatrixYear) {
+      const head = document.getElementById("feature-matrix-head");
+      const tbody = document.getElementById("feature-matrix-table");
+      const matrixData = featureMatrixByYear[year] || featureMatrixByYear["2026"];
+      head.innerHTML = "";
+      tbody.innerHTML = "";
+
+      const headerRow = document.createElement("tr");
+      const featureHeader = document.createElement("th");
+      featureHeader.scope = "col";
+      featureHeader.textContent = "Feature";
+      headerRow.appendChild(featureHeader);
+
+      matrixData.platforms.forEach((platform) => {
+        const platformHeader = document.createElement("th");
+        platformHeader.scope = "col";
+        platformHeader.className = "feature-platform-header";
+        platformHeader.textContent = platform;
+        headerRow.appendChild(platformHeader);
+      });
+
+      head.appendChild(headerRow);
+
+      featureMatrixFeatures.forEach((feature, featureIndex) => {
+        const row = document.createElement("tr");
+        const featureCell = document.createElement("td");
+        featureCell.textContent = feature;
+        row.appendChild(featureCell);
+
+        matrixData.platforms.forEach((platform) => {
+          row.appendChild(createFeatureStatusCell(Boolean(matrixData.presence[platform][featureIndex])));
+        });
+
+        tbody.appendChild(row);
+      });
+
+      const countRow = document.createElement("tr");
+      const countLabelCell = document.createElement("td");
+      countRow.className = "feature-count-row";
+      countLabelCell.textContent = "Feature Count / 15";
+      countRow.appendChild(countLabelCell);
+
+      matrixData.platforms.forEach((platform) => {
+        const countCell = document.createElement("td");
+        countCell.className = "feature-status-cell";
+        countCell.textContent = `${matrixData.counts[platform]} / 15`;
+        countRow.appendChild(countCell);
+      });
+
+      tbody.appendChild(countRow);
+    }
+
+    function activateFeatureMatrixYear(year) {
+      activeFeatureMatrixYear = featureMatrixByYear[year] ? year : "2026";
+      document.querySelectorAll("[data-feature-matrix-year]").forEach((button) => {
+        const isActive = button.dataset.featureMatrixYear === activeFeatureMatrixYear;
+        button.classList.toggle("is-active", isActive);
+        button.setAttribute("aria-pressed", String(isActive));
+      });
+      renderFeatureMatrix(activeFeatureMatrixYear);
     }
 
     function activateTab(tabName) {
@@ -1643,14 +2159,27 @@
       button.addEventListener("click", () => activateTab(button.dataset.tab));
     });
 
+    document.querySelectorAll("[data-positioning-year]").forEach((button) => {
+      button.addEventListener("click", () => activatePositioningYear(button.dataset.positioningYear));
+    });
+
+    document.querySelectorAll("[data-content-year]").forEach((button) => {
+      button.addEventListener("click", () => activateContentYear(button.dataset.contentYear));
+    });
+
+    document.querySelectorAll("[data-feature-matrix-year]").forEach((button) => {
+      button.addEventListener("click", () => activateFeatureMatrixYear(button.dataset.featureMatrixYear));
+    });
+
     document.querySelectorAll("[data-revenue-selection]").forEach((button) => {
       button.addEventListener("click", () => activateRevenueSelection(button.dataset.revenueSelection));
     });
 
-    renderPositioningChart();
+    renderPositioningChart(activePositioningYear);
     renderRevenueChart("All");
-    renderContentCountsTable();
-    renderProviderRegionMixTable();
+    renderContentCountsTable(activeContentYear);
+    renderProviderRegionMixTable(activeContentYear);
+    renderFeatureMatrix(activeFeatureMatrixYear);
   </script>
 </body>
 </html>
