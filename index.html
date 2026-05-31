@@ -99,9 +99,13 @@
       transition: background 160ms ease, color 160ms ease, border-color 160ms ease;
     }
 
-    .tab-button:hover,
+    .tab-button:hover {
+      background: rgba(255, 255, 255, 0.16);
+    }
+
     .tab-button:focus-visible {
       background: rgba(255, 255, 255, 0.16);
+      box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.45);
       outline: none;
     }
 
@@ -298,9 +302,13 @@
       transition: background 160ms ease, border-color 160ms ease, color 160ms ease;
     }
 
-    .platform-pill:hover,
+    .platform-pill:hover {
+      border-color: var(--lg-medium-blue);
+    }
+
     .platform-pill:focus-visible {
       border-color: var(--lg-medium-blue);
+      box-shadow: 0 0 0 3px rgba(32, 127, 187, 0.25);
       outline: none;
     }
 
@@ -713,7 +721,7 @@
           <div class="revenue-chart-wrap">
             <svg id="revenue-chart" role="img" aria-labelledby="revenue-chart-title revenue-chart-desc"></svg>
           </div>
-          <p class="chart-footnote" id="revenue-footnote">Revenue values are $M gross purchases / revenue estimates. VGW and Patrianna are operator-level estimates across multiple brands; Chumba and McLuck are used as product-level anchors in positioning/content views where applicable.</p>
+          <p class="chart-footnote" id="revenue-footnote">Revenue values are shown in $M and reflect gross purchases or revenue estimates, depending on source availability. EKG-estimated years retain the E suffix where applicable. VGW and Patrianna are operator-level estimates; Chumba and McLuck are used as product-level anchors in positioning/content views where applicable.</p>
         </div>
       </section>
 
@@ -801,6 +809,7 @@
             <li>Game count is supplemental context only and is not used for positioning-chart axis placement.</li>
             <li>NA/Branded classification is based on visible provider, proprietary, branded, platform-native, and origin evidence. EU/Other includes providers without qualifying NA/Branded evidence.</li>
             <li>2022 values are historical reconstructions using public evidence and minimum verified counts when available; 2028 values are directional Roadmap Execution Case projections, not observed current-state values.</li>
+            <li>Cider is included where 2026 teardown data was available, but is not part of the core positioning/revenue comp set in this version.</li>
           </ul>
         </div>
 
@@ -830,7 +839,8 @@
                 </tr>
               </thead>
               <tbody>
-                <tr><td>EKG Market Sizing</td><td>Client-provided research</td></tr>
+                <tr><td>Research Spreadsheet</td><td><a href="https://docs.google.com/spreadsheets/d/18Yhj6Xi_JoOlAtSK5-kVxT0loXGwpSbNAN1b5uuaEQE/edit?gid=0#gid=0" class="source-link" target="_blank" rel="noopener">https://docs.google.com/spreadsheets/d/18Yhj6Xi_JoOlAtSK5-kVxT0loXGwpSbNAN1b5uuaEQE/edit?gid=0#gid=0</a></td></tr>
+                <tr><td>EKG Market Sizing / Reporting Work</td><td>Client-provided research; no public URL</td></tr>
                 <tr><td>Chumba Lobby</td><td><a href="https://lobby.chumbacasino.com/" class="source-link" target="_blank" rel="noopener">https://lobby.chumbacasino.com/</a></td></tr>
                 <tr><td>Chumba Slots</td><td><a href="https://lobby.chumbacasino.com/slots" class="source-link" target="_blank" rel="noopener">https://lobby.chumbacasino.com/slots</a></td></tr>
                 <tr><td>Crown Coins Website</td><td><a href="https://crowncoinscasino.com/" class="source-link" target="_blank" rel="noopener">https://crowncoinscasino.com/</a></td></tr>
@@ -849,47 +859,47 @@
                 <tr><td>Cider Casino Trademark/Terms Filing</td><td><a href="https://uspto.report/TM/99350365/APP20250821164321/3.pdf" class="source-link" target="_blank" rel="noopener">https://uspto.report/TM/99350365/APP20250821164321/3.pdf</a></td></tr>
                 <tr><td>Deadspin Cider Legal States</td><td><a href="https://deadspin.com/sweepstakes-casinos/reviews/cider-casino/legal-states/" class="source-link" target="_blank" rel="noopener">https://deadspin.com/sweepstakes-casinos/reviews/cider-casino/legal-states/</a></td></tr>
                 <tr><td>Wayback Machine CDX API</td><td><a href="https://web.archive.org/cdx" class="source-link" target="_blank" rel="noopener">https://web.archive.org/cdx</a></td></tr>
-                <tr><td>DiceDesk - Chumba Casino Guide</td><td><a href="https://dicedesk.com/guide/about-chumba-casino-social-casino/" class="source-link" target="_blank" rel="noopener">https://dicedesk.com/guide/about-chumba-casino-social-casino/</a></td></tr>
+                <tr><td>DiceDesk Chumba Casino Guide</td><td><a href="https://dicedesk.com/guide/about-chumba-casino-social-casino/" class="source-link" target="_blank" rel="noopener">https://dicedesk.com/guide/about-chumba-casino-social-casino/</a></td></tr>
                 <tr><td>Chumba Casino Terms and Conditions</td><td><a href="https://www.vgw.co/terms/chumba-casinos/" class="source-link" target="_blank" rel="noopener">https://www.vgw.co/terms/chumba-casinos/</a></td></tr>
-                <tr><td>YouTube - Chumba Walkthrough</td><td><a href="https://www.youtube.com/watch?v=CgnhvsltlFs&amp;rco=1" class="source-link" target="_blank" rel="noopener">https://www.youtube.com/watch?v=CgnhvsltlFs&amp;rco=1</a></td></tr>
-                <tr><td>Review42 - Chumba Review</td><td><a href="https://review42.com/reviews/betting/chumba-casino/" class="source-link" target="_blank" rel="noopener">https://review42.com/reviews/betting/chumba-casino/</a></td></tr>
-                <tr><td>BitcoinChaser - Stake Launch Article</td><td><a href="https://bitcoinchaser.com/stake-officially-launched-for-usa-players/" class="source-link" target="_blank" rel="noopener">https://bitcoinchaser.com/stake-officially-launched-for-usa-players/</a></td></tr>
-                <tr><td>WhichCasino - Stake Social Casino Launch Coverage</td><td><a href="https://www.whichcasino.com/news/stake-social-casino-20220801-0001/" class="source-link" target="_blank" rel="noopener">https://www.whichcasino.com/news/stake-social-casino-20220801-0001/</a></td></tr>
-                <tr><td>The Grueling Truth - Stake.us Slot Games</td><td><a href="https://thegruelingtruth.com/tgtplay/how-do-stakeus-slot-games-work/" class="source-link" target="_blank" rel="noopener">https://thegruelingtruth.com/tgtplay/how-do-stakeus-slot-games-work/</a></td></tr>
-                <tr><td>The Grueling Truth - Stake.us Sign Up</td><td><a href="https://thegruelingtruth.com/tgtplay/how-to-sign-up-with-stake-us/" class="source-link" target="_blank" rel="noopener">https://thegruelingtruth.com/tgtplay/how-to-sign-up-with-stake-us/</a></td></tr>
-                <tr><td>The Grueling Truth - Stake.us Weekly Bonus</td><td><a href="https://thegruelingtruth.com/tgtplay/stakeus-weekly-bonus-october-06-2022/" class="source-link" target="_blank" rel="noopener">https://thegruelingtruth.com/tgtplay/stakeus-weekly-bonus-october-06-2022/</a></td></tr>
-                <tr><td>The Grueling Truth - Stake.us Real-Money Games</td><td><a href="https://thegruelingtruth.com/tgtplay/stake-us-real-money-games/" class="source-link" target="_blank" rel="noopener">https://thegruelingtruth.com/tgtplay/stake-us-real-money-games/</a></td></tr>
-                <tr><td>YouTube - Stake.us Walkthrough</td><td><a href="https://www.youtube.com/watch?v=d_CobbMCHZk" class="source-link" target="_blank" rel="noopener">https://www.youtube.com/watch?v=d_CobbMCHZk</a></td></tr>
-                <tr><td>YouTube - Stake.us Provider Walkthrough</td><td><a href="https://www.youtube.com/watch?v=NG48OX9hVcs&amp;rco=1" class="source-link" target="_blank" rel="noopener">https://www.youtube.com/watch?v=NG48OX9hVcs&amp;rco=1</a></td></tr>
-                <tr><td>YouTube - Stake.us Live Dealer Walkthrough</td><td><a href="https://www.youtube.com/watch?v=gBpRRJbsAos" class="source-link" target="_blank" rel="noopener">https://www.youtube.com/watch?v=gBpRRJbsAos</a></td></tr>
-                <tr><td>YouTube - Stake.us Catalog-Count Walkthrough</td><td><a href="https://www.youtube.com/watch?v=FjxmzhMh8qQ" class="source-link" target="_blank" rel="noopener">https://www.youtube.com/watch?v=FjxmzhMh8qQ</a></td></tr>
-                <tr><td>YouTube - Pulsz Walkthrough</td><td><a href="https://www.youtube.com/watch?v=rGRCNdD2X1U" class="source-link" target="_blank" rel="noopener">https://www.youtube.com/watch?v=rGRCNdD2X1U</a></td></tr>
-                <tr><td>YouTube - Pulsz 2022 Review</td><td><a href="https://www.youtube.com/watch?v=x_TZoSLbu9Q&amp;rco=1" class="source-link" target="_blank" rel="noopener">https://www.youtube.com/watch?v=x_TZoSLbu9Q&amp;rco=1</a></td></tr>
-                <tr><td>YouTube - Pulsz Purchase and VIP Walkthrough</td><td><a href="https://www.youtube.com/watch?v=VgKIYC8bID4&amp;rco=1" class="source-link" target="_blank" rel="noopener">https://www.youtube.com/watch?v=VgKIYC8bID4&amp;rco=1</a></td></tr>
-                <tr><td>YouTube - Pulsz Drop Walkthrough</td><td><a href="https://www.youtube.com/watch?v=0zt8SjmG8u0" class="source-link" target="_blank" rel="noopener">https://www.youtube.com/watch?v=0zt8SjmG8u0</a></td></tr>
-                <tr><td>YouTube - Pulsz Casino Review</td><td><a href="https://www.askgamblers.com/online-casinos/reviews/pulsz-casino" class="source-link" target="_blank" rel="noopener">https://www.askgamblers.com/online-casinos/reviews/pulsz-casino</a></td></tr>
-                <tr><td>BestOdds - Best Slots on Pulsz Casino</td><td><a href="https://www.bestodds.com/sweepstakes/pulsz/slots" class="source-link" target="_blank" rel="noopener">https://www.bestodds.com/sweepstakes/pulsz/slots</a></td></tr>
-                <tr><td>The Casino Magazine - Pulsz Review</td><td><a href="https://thecasinomagazine.org/pulsz/" class="source-link" target="_blank" rel="noopener">https://thecasinomagazine.org/pulsz/</a></td></tr>
-                <tr><td>CasinoUSA - Pulsz Review</td><td><a href="https://www.casinousa.com/online-casinos/pulsz" class="source-link" target="_blank" rel="noopener">https://www.casinousa.com/online-casinos/pulsz</a></td></tr>
+                <tr><td>YouTube Chumba Walkthrough</td><td><a href="https://www.youtube.com/watch?v=CgnhvsltlFs&amp;rco=1" class="source-link" target="_blank" rel="noopener">https://www.youtube.com/watch?v=CgnhvsltlFs&amp;rco=1</a></td></tr>
+                <tr><td>Review42 Chumba Review</td><td><a href="https://review42.com/reviews/betting/chumba-casino/" class="source-link" target="_blank" rel="noopener">https://review42.com/reviews/betting/chumba-casino/</a></td></tr>
+                <tr><td>BitcoinChaser Stake Launch Article</td><td><a href="https://bitcoinchaser.com/stake-officially-launched-for-usa-players/" class="source-link" target="_blank" rel="noopener">https://bitcoinchaser.com/stake-officially-launched-for-usa-players/</a></td></tr>
+                <tr><td>WhichCasino Stake Social Casino Launch Coverage</td><td><a href="https://www.whichcasino.com/news/stake-social-casino-20220801-0001/" class="source-link" target="_blank" rel="noopener">https://www.whichcasino.com/news/stake-social-casino-20220801-0001/</a></td></tr>
+                <tr><td>The Grueling Truth &mdash; Stake.us Slot Games</td><td><a href="https://thegruelingtruth.com/tgtplay/how-do-stakeus-slot-games-work/" class="source-link" target="_blank" rel="noopener">https://thegruelingtruth.com/tgtplay/how-do-stakeus-slot-games-work/</a></td></tr>
+                <tr><td>The Grueling Truth &mdash; Stake.us Sign Up</td><td><a href="https://thegruelingtruth.com/tgtplay/how-to-sign-up-with-stake-us/" class="source-link" target="_blank" rel="noopener">https://thegruelingtruth.com/tgtplay/how-to-sign-up-with-stake-us/</a></td></tr>
+                <tr><td>The Grueling Truth &mdash; Stake.us Weekly Bonus</td><td><a href="https://thegruelingtruth.com/tgtplay/stakeus-weekly-bonus-october-06-2022/" class="source-link" target="_blank" rel="noopener">https://thegruelingtruth.com/tgtplay/stakeus-weekly-bonus-october-06-2022/</a></td></tr>
+                <tr><td>The Grueling Truth &mdash; Stake.us Real-Money Games</td><td><a href="https://thegruelingtruth.com/tgtplay/stake-us-real-money-games/" class="source-link" target="_blank" rel="noopener">https://thegruelingtruth.com/tgtplay/stake-us-real-money-games/</a></td></tr>
+                <tr><td>YouTube Stake.us Walkthrough</td><td><a href="https://www.youtube.com/watch?v=d_CobbMCHZk" class="source-link" target="_blank" rel="noopener">https://www.youtube.com/watch?v=d_CobbMCHZk</a></td></tr>
+                <tr><td>YouTube Stake.us Provider Walkthrough</td><td><a href="https://www.youtube.com/watch?v=NG48OX9hVcs&amp;rco=1" class="source-link" target="_blank" rel="noopener">https://www.youtube.com/watch?v=NG48OX9hVcs&amp;rco=1</a></td></tr>
+                <tr><td>YouTube Stake.us Live Dealer Walkthrough</td><td><a href="https://www.youtube.com/watch?v=gBpRRJbsAos" class="source-link" target="_blank" rel="noopener">https://www.youtube.com/watch?v=gBpRRJbsAos</a></td></tr>
+                <tr><td>YouTube Stake.us Catalog-Count Walkthrough</td><td><a href="https://www.youtube.com/watch?v=FjxmzhMh8qQ" class="source-link" target="_blank" rel="noopener">https://www.youtube.com/watch?v=FjxmzhMh8qQ</a></td></tr>
+                <tr><td>YouTube Pulsz Walkthrough</td><td><a href="https://www.youtube.com/watch?v=rGRCNdD2X1U" class="source-link" target="_blank" rel="noopener">https://www.youtube.com/watch?v=rGRCNdD2X1U</a></td></tr>
+                <tr><td>YouTube Pulsz 2022 Review</td><td><a href="https://www.youtube.com/watch?v=x_TZoSLbu9Q&amp;rco=1" class="source-link" target="_blank" rel="noopener">https://www.youtube.com/watch?v=x_TZoSLbu9Q&amp;rco=1</a></td></tr>
+                <tr><td>YouTube Pulsz Purchase and VIP Walkthrough</td><td><a href="https://www.youtube.com/watch?v=VgKIYC8bID4&amp;rco=1" class="source-link" target="_blank" rel="noopener">https://www.youtube.com/watch?v=VgKIYC8bID4&amp;rco=1</a></td></tr>
+                <tr><td>YouTube Pulsz Drop Walkthrough</td><td><a href="https://www.youtube.com/watch?v=0zt8SjmG8u0" class="source-link" target="_blank" rel="noopener">https://www.youtube.com/watch?v=0zt8SjmG8u0</a></td></tr>
+                <tr><td>AskGamblers Pulsz Casino Review</td><td><a href="https://www.askgamblers.com/online-casinos/reviews/pulsz-casino" class="source-link" target="_blank" rel="noopener">https://www.askgamblers.com/online-casinos/reviews/pulsz-casino</a></td></tr>
+                <tr><td>BestOdds &mdash; Best Slots on Pulsz Casino</td><td><a href="https://www.bestodds.com/sweepstakes/pulsz/slots" class="source-link" target="_blank" rel="noopener">https://www.bestodds.com/sweepstakes/pulsz/slots</a></td></tr>
+                <tr><td>The Casino Magazine Pulsz Review</td><td><a href="https://thecasinomagazine.org/pulsz/" class="source-link" target="_blank" rel="noopener">https://thecasinomagazine.org/pulsz/</a></td></tr>
+                <tr><td>CasinoUSA Pulsz Review</td><td><a href="https://www.casinousa.com/online-casinos/pulsz" class="source-link" target="_blank" rel="noopener">https://www.casinousa.com/online-casinos/pulsz</a></td></tr>
                 <tr><td>McLuck About</td><td><a href="https://www.mcluck.com/about" class="source-link" target="_blank" rel="noopener">https://www.mcluck.com/about</a></td></tr>
                 <tr><td>McLuck Turns 3</td><td><a href="https://blog.mcluck.com/updates/mcluck-turns-3/" class="source-link" target="_blank" rel="noopener">https://blog.mcluck.com/updates/mcluck-turns-3/</a></td></tr>
                 <tr><td>Who Is B2Services?</td><td><a href="https://support.mcluck.com/hc/en-us/articles/20028415989533-Who-is-B2Services" class="source-link" target="_blank" rel="noopener">https://support.mcluck.com/hc/en-us/articles/20028415989533-Who-is-B2Services</a></td></tr>
                 <tr><td>Patrianna Website</td><td><a href="https://www.patrianna.com/" class="source-link" target="_blank" rel="noopener">https://www.patrianna.com/</a></td></tr>
                 <tr><td>SweepsKings Jackpota Launch</td><td><a href="https://sweepskings.com/news/b2services-launch-jackpota-social-casino/" class="source-link" target="_blank" rel="noopener">https://sweepskings.com/news/b2services-launch-jackpota-social-casino/</a></td></tr>
                 <tr><td>StakePlayerCount Provider Pages</td><td><a href="https://stakeplayercount.com/providers/" class="source-link" target="_blank" rel="noopener">https://stakeplayercount.com/providers/</a></td></tr>
-                <tr><td>Apple App Store - Chumba Lite Casino Games</td><td><a href="https://apps.apple.com/us/app/chumba-lite-casino-games/id1477838355" class="source-link" target="_blank" rel="noopener">https://apps.apple.com/us/app/chumba-lite-casino-games/id1477838355</a></td></tr>
-                <tr><td>Apple App Store - CrownCoins Casino</td><td><a href="https://apps.apple.com/us/app/crowncoins-casino/id6450413462" class="source-link" target="_blank" rel="noopener">https://apps.apple.com/us/app/crowncoins-casino/id6450413462</a></td></tr>
-                <tr><td>Apple App Store - Modo Casino Slots Games</td><td><a href="https://apps.apple.com/us/app/modo-casino-slots-games/id6741076536" class="source-link" target="_blank" rel="noopener">https://apps.apple.com/us/app/modo-casino-slots-games/id6741076536</a></td></tr>
-                <tr><td>Apple App Store - McLuck Casino Games &amp; Slots</td><td><a href="https://apps.apple.com/us/app/mcluck-casino-games-slots/id6447609470" class="source-link" target="_blank" rel="noopener">https://apps.apple.com/us/app/mcluck-casino-games-slots/id6447609470</a></td></tr>
-                <tr><td>Apple App Store - Pulsz Online Casino Games</td><td><a href="https://apps.apple.com/us/app/pulsz-online-casino-games/id1594248922" class="source-link" target="_blank" rel="noopener">https://apps.apple.com/us/app/pulsz-online-casino-games/id1594248922</a></td></tr>
-                <tr><td>Apple App Store - Stake.us Casino Slots</td><td><a href="https://apps.apple.com/us/app/stake-us-casino-slots/id6738114176" class="source-link" target="_blank" rel="noopener">https://apps.apple.com/us/app/stake-us-casino-slots/id6738114176</a></td></tr>
-                <tr><td>Apple App Store - Cider Casino - Real Money</td><td><a href="https://apps.apple.com/us/app/cider-casino-real-money/id6744304405" class="source-link" target="_blank" rel="noopener">https://apps.apple.com/us/app/cider-casino-real-money/id6744304405</a></td></tr>
-                <tr><td>Sensor Tower - Chumba</td><td><a href="https://app.sensortower.com/update-timeline?app_id=1477838355&amp;country=US" class="source-link" target="_blank" rel="noopener">https://app.sensortower.com/update-timeline?app_id=1477838355&amp;country=US</a></td></tr>
-                <tr><td>Sensor Tower - Crown Coins</td><td><a href="https://app.sensortower.com/update-timeline?app_id=6450413462&amp;country=US" class="source-link" target="_blank" rel="noopener">https://app.sensortower.com/update-timeline?app_id=6450413462&amp;country=US</a></td></tr>
-                <tr><td>Sensor Tower - Modo</td><td><a href="https://app.sensortower.com/update-timeline?app_id=6741076536&amp;country=US" class="source-link" target="_blank" rel="noopener">https://app.sensortower.com/update-timeline?app_id=6741076536&amp;country=US</a></td></tr>
-                <tr><td>Sensor Tower - McLuck</td><td><a href="https://app.sensortower.com/update-timeline?app_id=6447609470&amp;country=US" class="source-link" target="_blank" rel="noopener">https://app.sensortower.com/update-timeline?app_id=6447609470&amp;country=US</a></td></tr>
-                <tr><td>Sensor Tower - Pulsz</td><td><a href="https://app.sensortower.com/update-timeline?app_id=1594248922&amp;country=US" class="source-link" target="_blank" rel="noopener">https://app.sensortower.com/update-timeline?app_id=1594248922&amp;country=US</a></td></tr>
-                <tr><td>Sensor Tower - Stake.us</td><td><a href="https://app.sensortower.com/update-timeline?app_id=6738114176&amp;country=US" class="source-link" target="_blank" rel="noopener">https://app.sensortower.com/update-timeline?app_id=6738114176&amp;country=US</a></td></tr>
+                <tr><td>Apple App Store &mdash; Chumba Lite Casino Games</td><td><a href="https://apps.apple.com/us/app/chumba-lite-casino-games/id1477838355" class="source-link" target="_blank" rel="noopener">https://apps.apple.com/us/app/chumba-lite-casino-games/id1477838355</a></td></tr>
+                <tr><td>Apple App Store &mdash; CrownCoins Casino</td><td><a href="https://apps.apple.com/us/app/crowncoins-casino/id6450413462" class="source-link" target="_blank" rel="noopener">https://apps.apple.com/us/app/crowncoins-casino/id6450413462</a></td></tr>
+                <tr><td>Apple App Store &mdash; Modo Casino Slots Games</td><td><a href="https://apps.apple.com/us/app/modo-casino-slots-games/id6741076536" class="source-link" target="_blank" rel="noopener">https://apps.apple.com/us/app/modo-casino-slots-games/id6741076536</a></td></tr>
+                <tr><td>Apple App Store &mdash; McLuck Casino Games &amp; Slots</td><td><a href="https://apps.apple.com/us/app/mcluck-casino-games-slots/id6447609470" class="source-link" target="_blank" rel="noopener">https://apps.apple.com/us/app/mcluck-casino-games-slots/id6447609470</a></td></tr>
+                <tr><td>Apple App Store &mdash; Pulsz Online Casino Games</td><td><a href="https://apps.apple.com/us/app/pulsz-online-casino-games/id1594248922" class="source-link" target="_blank" rel="noopener">https://apps.apple.com/us/app/pulsz-online-casino-games/id1594248922</a></td></tr>
+                <tr><td>Apple App Store &mdash; Stake.us Casino Slots</td><td><a href="https://apps.apple.com/us/app/stake-us-casino-slots/id6738114176" class="source-link" target="_blank" rel="noopener">https://apps.apple.com/us/app/stake-us-casino-slots/id6738114176</a></td></tr>
+                <tr><td>Apple App Store &mdash; Cider Casino - Real Money</td><td><a href="https://apps.apple.com/us/app/cider-casino-real-money/id6744304405" class="source-link" target="_blank" rel="noopener">https://apps.apple.com/us/app/cider-casino-real-money/id6744304405</a></td></tr>
+                <tr><td>Sensor Tower &mdash; Chumba</td><td><a href="https://app.sensortower.com/update-timeline?app_id=1477838355&amp;country=US" class="source-link" target="_blank" rel="noopener">https://app.sensortower.com/update-timeline?app_id=1477838355&amp;country=US</a></td></tr>
+                <tr><td>Sensor Tower &mdash; Crown Coins</td><td><a href="https://app.sensortower.com/update-timeline?app_id=6450413462&amp;country=US" class="source-link" target="_blank" rel="noopener">https://app.sensortower.com/update-timeline?app_id=6450413462&amp;country=US</a></td></tr>
+                <tr><td>Sensor Tower &mdash; Modo</td><td><a href="https://app.sensortower.com/update-timeline?app_id=6741076536&amp;country=US" class="source-link" target="_blank" rel="noopener">https://app.sensortower.com/update-timeline?app_id=6741076536&amp;country=US</a></td></tr>
+                <tr><td>Sensor Tower &mdash; McLuck</td><td><a href="https://app.sensortower.com/update-timeline?app_id=6447609470&amp;country=US" class="source-link" target="_blank" rel="noopener">https://app.sensortower.com/update-timeline?app_id=6447609470&amp;country=US</a></td></tr>
+                <tr><td>Sensor Tower &mdash; Pulsz</td><td><a href="https://app.sensortower.com/update-timeline?app_id=1594248922&amp;country=US" class="source-link" target="_blank" rel="noopener">https://app.sensortower.com/update-timeline?app_id=1594248922&amp;country=US</a></td></tr>
+                <tr><td>Sensor Tower &mdash; Stake.us</td><td><a href="https://app.sensortower.com/update-timeline?app_id=6738114176&amp;country=US" class="source-link" target="_blank" rel="noopener">https://app.sensortower.com/update-timeline?app_id=6738114176&amp;country=US</a></td></tr>
               </tbody>
             </table>
           </div>
@@ -1203,7 +1213,6 @@
       }
     };
 
-    // Revenue values may be updated when the next EKG report arrives.
     const revenueData = [
       { year: "2019", VGW: 450, "Crown Coins": 0, Patrianna: 0, Modo: 0, Pulsz: 0, "Stake.us": 0 },
       { year: "2020", VGW: 1220, "Crown Coins": 0, Patrianna: 0, Modo: 0, Pulsz: 10, "Stake.us": 0 },
@@ -1646,13 +1655,21 @@
           const cy = yScale(item.naBrandedPct) + (item.displayDy || 0);
           const radius = radiusScale(item.revenueEstimate);
           const group = createSvgElement("g");
+          const entityMetadata = revenueEntityMetadata[item.revenueEntity];
+          const productAnchor = entityMetadata?.operationalPlatform;
+          const isAnchoredEntity = productAnchor && productAnchor !== item.revenueEntity;
           const tooltipRows = [
-            ["Platform", item.platform],
             ["Feature count", String(item.xFeatureCount)],
             ["NA/Branded", `${Math.round(item.naBrandedPct)}%`],
             ["EU/Other", `${Math.round(item.euOtherPct)}%`],
             ["Revenue estimate", formatMoney(item.revenueEstimate)]
           ];
+          if (isAnchoredEntity) {
+            tooltipRows.unshift(["Product anchor", productAnchor]);
+            tooltipRows.unshift(["Revenue entity", item.revenueEntity]);
+          } else {
+            tooltipRows.unshift(["Platform", item.platform]);
+          }
           if (item.note) {
             tooltipRows.push(["Note", item.note]);
           }
@@ -1766,15 +1783,16 @@
 
     function updateRevenueFootnote(selection) {
       const footnote = document.getElementById("revenue-footnote");
+      const operatorFootnote = "Revenue values are shown in $M and reflect gross purchases or revenue estimates, depending on source availability. EKG-estimated years retain the E suffix where applicable. VGW and Patrianna are operator-level estimates; Chumba and McLuck are used as product-level anchors in positioning/content views where applicable.";
 
       if (selection === "All") {
-        footnote.textContent = "Revenue values are $M gross purchases / revenue estimates. VGW and Patrianna are operator-level estimates across multiple brands; Chumba and McLuck are used as product-level anchors in positioning/content views where applicable.";
+        footnote.textContent = operatorFootnote;
         footnote.hidden = false;
         return;
       }
 
       if (selection === "VGW" || selection === "Patrianna") {
-        footnote.textContent = "Revenue values are $M gross purchases / revenue estimates. VGW and Patrianna are operator-level estimates across multiple brands; Chumba and McLuck are used as product-level anchors in positioning/content views where applicable.";
+        footnote.textContent = operatorFootnote;
         footnote.hidden = false;
         return;
       }
@@ -1799,7 +1817,7 @@
         width: width - margin.left - margin.right,
         height: height - margin.top - margin.bottom
       };
-      const maxValue = selection === "All" ? getNiceRevenueMax(getRevenueMax(selection)) : 6000;
+      const maxValue = getNiceRevenueMax(getRevenueMax(selection));
       const yScale = (value) => plot.y + plot.height - (value / maxValue) * plot.height;
       const barSlot = plot.width / revenueData.length;
       const barWidth = Math.min(68, barSlot * 0.58);
@@ -1980,10 +1998,11 @@
 
       contentCountsData.forEach((item) => {
         const row = document.createElement("tr");
-        const platformCell = document.createElement("td");
+        const platformCell = document.createElement("th");
         const providerCell = document.createElement("td");
         const gameCell = document.createElement("td");
 
+        platformCell.scope = "row";
         providerCell.className = "numeric";
         gameCell.className = "numeric";
 
@@ -2003,13 +2022,14 @@
 
       providerRegionMixData.forEach((item) => {
         const row = document.createElement("tr");
-        const platformCell = document.createElement("td");
+        const platformCell = document.createElement("th");
         const naCountCell = document.createElement("td");
         const otherCountCell = document.createElement("td");
         const naPctCell = document.createElement("td");
         const otherPctCell = document.createElement("td");
         const mixCell = document.createElement("td");
 
+        platformCell.scope = "row";
         [naCountCell, otherCountCell, naPctCell, otherPctCell].forEach((cell) => {
           cell.className = "numeric";
         });
@@ -2059,6 +2079,7 @@
       const status = document.createElement("span");
 
       cell.className = "feature-status-cell";
+      cell.setAttribute("aria-label", isPresent ? "Present" : "Absent");
       status.className = `feature-status${isPresent ? "" : " is-absent"}`;
       status.textContent = isPresent ? "✓" : "—";
       cell.appendChild(status);
@@ -2090,7 +2111,8 @@
 
       featureMatrixFeatures.forEach((feature, featureIndex) => {
         const row = document.createElement("tr");
-        const featureCell = document.createElement("td");
+        const featureCell = document.createElement("th");
+        featureCell.scope = "row";
         featureCell.textContent = feature;
         row.appendChild(featureCell);
 
@@ -2102,8 +2124,9 @@
       });
 
       const countRow = document.createElement("tr");
-      const countLabelCell = document.createElement("td");
+      const countLabelCell = document.createElement("th");
       countRow.className = "feature-count-row";
+      countLabelCell.scope = "row";
       countLabelCell.textContent = "Feature Count / 15";
       countRow.appendChild(countLabelCell);
 
@@ -2168,3 +2191,4 @@
   </script>
 </body>
 </html>
+
